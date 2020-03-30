@@ -6,7 +6,7 @@ using System.Text;
 
 namespace DataAccessLibrary.DataAccess
 {
-    class MovieContext : DbContext
+    public class MovieContext : DbContext
     {
         public MovieContext(DbContextOptions options) : base(options)
         { }
