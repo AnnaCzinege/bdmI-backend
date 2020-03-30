@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DataAccessLibrary.DataAccess;
 using DataAccessLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace ImdbBackend.Controllers
@@ -25,7 +26,7 @@ namespace ImdbBackend.Controllers
         [HttpGet]
         public Movie Get()
         {
-            return _db.Movies.Single(movie => movie.OriginalTitle.Equals("LOL"));
+            return _db.Movies.Include(movie => movie.Genres).Include(movie => movie.SpokenLanguages).Single(movie => movie.OriginalTitle.Equals("LOL"));
         }
     }
 }
