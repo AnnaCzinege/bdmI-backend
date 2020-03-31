@@ -25,9 +25,7 @@ namespace ImdbBackend.Controllers
 
         [HttpGet]
         public Movie Get()
-        {
-            _db.Remove(_db.Movies.Single(m => m.Id == 1));
-            _db.SaveChanges();
+        { 
             return null; //_db.Movies.Include(movie => movie.MovieGenres).Include(movie => movie.MovieLanguages).Single(movie => movie.OriginalTitle.Equals("LOL"));
         }
     }

@@ -25,7 +25,7 @@ namespace ImdbBackend
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             List<int> movieIds = new List<int>();
-            movieIds = await ForceToFetchIds(movieIds);
+            movieIds = await GetMovieIds();
             DeleteFromDb(movieIds);
             await ForceToFetchDetails(movieIds);
             Console.WriteLine("Database update completed!");
@@ -39,17 +39,28 @@ namespace ImdbBackend
 
             for (int page = 1; page <= totalMoviePages; page++)
             {
-                using (HttpClient client = new HttpClient())
+                string requestUri = baseURL + page;
+                bool success = false;
+                while (!success)
                 {
-                    using (HttpResponseMessage res = await client.GetAsync(baseURL + page))
+                    try
                     {
+                        using (HttpClient client = new HttpClient())
+                        using (HttpResponseMessage res = await client.GetAsync(requestUri))
                         using (HttpContent content = res.Content)
                         {
                             string data = await content.ReadAsStringAsync();
                             movieIds.AddRange(JObject.Parse(data)["results"].Select(item => Convert.ToInt32(item["id"])).ToList());
+                            success = true;
                         }
                     }
+                    catch (HttpRequestException hre)
+                    {
+                        Console.WriteLine($"Exception thrown getting page data: {requestUri}");
+                        Console.WriteLine(hre.Message);
+                    }
                 }
+
                 Console.WriteLine(movieIds.Count());
             }
             return movieIds;
@@ -59,7 +70,7 @@ namespace ImdbBackend
         {
             foreach (var movieId in movieIds)
             {
-                if (!_db.Movies.Select(movie => movie.OriginalId).Contains(movieId))
+                if (!_db.Movies.Any(movie => movie.OriginalId == movieId))
                 {
                     Console.WriteLine("Need fetch");
                     string dynamicURL = $"https://api.themoviedb.org/3/movie/{movieId}?api_key=bb29364ab81ef62380611d162d85ecdb&language=en-US";
@@ -68,20 +79,23 @@ namespace ImdbBackend
                         try
                         {
                             using (HttpResponseMessage res = await client.GetAsync(dynamicURL))
+                            using (HttpContent content = res.Content)
                             {
-                                using (HttpContent content = res.Content)
-                                {
-                                    string data = await content.ReadAsStringAsync();
-                                    JToken jsonObject = JObject.Parse(data);
-                                    DeserializeJson(jsonObject);
-                                }
+                                string data = await content.ReadAsStringAsync();
+                                JToken jsonObject = JObject.Parse(data);
+                                DeserializeMovie(jsonObject);
+                                DeserializeGenres(jsonObject);
+                                DeserializeLanguages(jsonObject);
                             }
                         }
-                        catch (ArgumentNullException)
+                        catch (Exception ex)
                         {
-                            Console.WriteLine(movieId);
-                            ++_fetchCounter;
-                            continue;
+                            if (ex is ArgumentNullException || ex is InvalidOperationException)
+                            {
+                                Console.WriteLine(movieId);
+                                ++_fetchCounter;
+                                continue;
+                            }
                         }
                     }
                 }
@@ -90,9 +104,65 @@ namespace ImdbBackend
             }
         }
 
-        private void DeserializeJson(JToken jsonObject)
+        private void DeserializeLanguages(JToken jsonObject)
         {
-            Movie movieToAdd = new Movie() {
+            foreach (var language in jsonObject["spoken_languages"])
+            {
+                string currentLanguageName = Convert.ToString(language["name"]);
+
+                if (!_db.Languages.Any(l => l.Name == currentLanguageName))
+                {
+                    _db.Add(new Language() { Name = currentLanguageName });
+                    _db.SaveChanges();
+                }
+
+                int currentMovieId = _db.Movies.Single(m => m.OriginalId == Convert.ToInt32(jsonObject["id"])).Id;
+                int currentLanguageId = _db.Languages.Single(l => l.Name == Convert.ToString(language["name"])).Id;
+
+                if (!_db.MovieLanguages.Where(ml=>ml.MovieId == currentMovieId).Any(ml => ml.LanguageId == currentLanguageId))
+                {
+                    _db.Add(new MovieLanguage()
+                    {
+                        LanguageId = currentLanguageId,
+                        MovieId = currentMovieId
+                    });
+                    _db.SaveChanges();
+                }
+            }
+        }
+
+        private void DeserializeGenres(JToken jsonObject)
+        {
+            foreach (var genre in jsonObject["genres"])
+            {
+                string currentGenreName = Convert.ToString(genre["name"]);
+
+                if (!_db.Genres.Any(g => g.Name == currentGenreName))
+                {
+                    _db.Add(new Genre() { Name = currentGenreName });
+                    _db.SaveChanges();
+                }
+
+                int currentMovieId = _db.Movies.Single(m => m.OriginalId == Convert.ToInt32(jsonObject["id"])).Id;
+                int currentGenreId = _db.Genres.Single(g => g.Name == Convert.ToString(genre["name"])).Id;
+
+                if (!_db.MovieGenres.Where(mg => mg.MovieId == currentMovieId).Any(mg => mg.GenreId == currentGenreId))
+                {
+                    _db.Add(new MovieGenre() 
+                    {
+                        GenreId = currentGenreId,
+                        MovieId = currentMovieId
+                    });
+                    _db.SaveChanges();
+                }
+               
+            }
+        }
+
+        private void DeserializeMovie(JToken jsonObject)
+        {
+            Movie movieToAdd = new Movie()
+            {
                 OriginalId = Convert.ToInt32(jsonObject["id"]),
                 OriginalTitle = Convert.ToString(jsonObject["original_title"]),
                 Overview = Convert.ToString(jsonObject["overview"]),
@@ -103,33 +173,6 @@ namespace ImdbBackend
                 Popularity = Convert.ToString(jsonObject["popularity"]).Length == 0 ? 0.0 : Convert.ToDouble(jsonObject["popularity"]),
                 PosterPath = Convert.ToString(jsonObject["poster_path"])
             };
-
-            List<MovieGenre> genresToAdd = new List<MovieGenre>();
-            foreach (var genre in jsonObject["genres"])
-            {
-                genresToAdd.Add(new MovieGenre()
-                {
-                    Genre = _db.Genres.Select(g => g.Name).Contains(Convert.ToString(genre["name"])) 
-                            ? _db.Genres.Single(g => g.Name == Convert.ToString(genre["name"])) 
-                            : new Genre() { Name = Convert.ToString(genre["name"]) },
-                    Movie = movieToAdd
-                });
-            }
-
-            List<MovieLanguage> languagesToAdd = new List<MovieLanguage>();
-            foreach (var language in jsonObject["spoken_languages"])
-            {
-                languagesToAdd.Add(new MovieLanguage()
-                {
-                    Language = _db.Languages.Select(l => l.Name).Contains(Convert.ToString(language["name"]))
-                            ? _db.Languages.Single(l => l.Name == Convert.ToString(language["name"]))
-                            : new Language() { Name = Convert.ToString(language["name"]) },
-                    Movie = movieToAdd
-                });
-            }
-
-            movieToAdd.MovieGenres = genresToAdd;
-            movieToAdd.MovieLanguages = languagesToAdd;
 
             _db.Add(movieToAdd);
             _db.SaveChanges();
@@ -162,6 +205,9 @@ namespace ImdbBackend
                 }
                 catch (HttpRequestException)
                 {
+                    Console.WriteLine("sleep start");
+                    System.Threading.Thread.Sleep(30000);
+                    Console.WriteLine("sleep end");
                     _fetchCounter = 0;
                     continue;
                 }
@@ -176,9 +222,7 @@ namespace ImdbBackend
             {
                 if (!movieIds.Contains(movieIdFromDb))
                 {
-                    Movie dataToDelete = _db.Movies.Include(m => m.MovieLanguages)
-                        .Include(m => m.MovieGenres)
-                        .Single(movie => movie.OriginalId == movieIdFromDb);
+                    Movie dataToDelete = _db.Movies.Single(movie => movie.OriginalId == movieIdFromDb);
                     _db.Remove(dataToDelete);
                     _db.SaveChanges();
                 }

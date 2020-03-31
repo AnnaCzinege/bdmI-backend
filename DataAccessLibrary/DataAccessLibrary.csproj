@@ -9,6 +9,22 @@
     <Compile Remove="Migrations\20200330200409_lol.Designer.cs" />
     <Compile Remove="Migrations\20200330200448_init.cs" />
     <Compile Remove="Migrations\20200330200448_init.Designer.cs" />
+    <Compile Remove="Migrations\20200330201235_init.cs" />
+    <Compile Remove="Migrations\20200330201235_init.Designer.cs" />
+    <Compile Remove="Migrations\20200331062614_init.cs" />
+    <Compile Remove="Migrations\20200331062614_init.Designer.cs" />
+    <Compile Remove="Migrations\20200331065207_init.cs" />
+    <Compile Remove="Migrations\20200331065207_init.Designer.cs" />
+    <Compile Remove="Migrations\20200331071556_init.cs" />
+    <Compile Remove="Migrations\20200331071556_init.Designer.cs" />
+    <Compile Remove="Migrations\20200331075020_init.cs" />
+    <Compile Remove="Migrations\20200331075020_init.Designer.cs" />
+    <Compile Remove="Migrations\20200331075226_ok.cs" />
+    <Compile Remove="Migrations\20200331075226_ok.Designer.cs" />
+    <Compile Remove="Migrations\20200331094132_ok.cs" />
+    <Compile Remove="Migrations\20200331094132_ok.Designer.cs" />
+    <Compile Remove="Migrations\20200331100607_init.cs" />
+    <Compile Remove="Migrations\20200331100607_init.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
