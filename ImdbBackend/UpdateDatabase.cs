@@ -27,7 +27,7 @@ namespace ImdbBackend
             List<int> movieIds = new List<int>();
             movieIds = await GetMovieIds();
             DeleteFromDb(movieIds);
-            await ForceToFetchDetails(movieIds);
+            await Update(movieIds);
             Console.WriteLine("Database update completed!");
         }
 
@@ -60,7 +60,6 @@ namespace ImdbBackend
                         Console.WriteLine(hre.Message);
                     }
                 }
-
                 Console.WriteLine(movieIds.Count());
             }
             return movieIds;
@@ -72,32 +71,45 @@ namespace ImdbBackend
             {
                 if (!_db.Movies.Any(movie => movie.OriginalId == movieId))
                 {
-                    Console.WriteLine("Need fetch");
                     string dynamicURL = $"https://api.themoviedb.org/3/movie/{movieId}?api_key=bb29364ab81ef62380611d162d85ecdb&language=en-US";
-                    using (HttpClient client = new HttpClient())
+                    try
                     {
-                        try
+                        bool succes = false;
+                        while (!succes)
                         {
-                            using (HttpResponseMessage res = await client.GetAsync(dynamicURL))
-                            using (HttpContent content = res.Content)
+                            try
                             {
-                                string data = await content.ReadAsStringAsync();
-                                JToken jsonObject = JObject.Parse(data);
-                                DeserializeMovie(jsonObject);
-                                DeserializeGenres(jsonObject);
-                                DeserializeLanguages(jsonObject);
+                                using (HttpClient client = new HttpClient())
+                                using (HttpResponseMessage res = await client.GetAsync(dynamicURL))
+                                using (HttpContent content = res.Content)
+                                {
+                                    string data = await content.ReadAsStringAsync();
+                                    JToken jsonObject = JObject.Parse(data);
+                                    //deserialize and add
+                                    DeserializeMovie(jsonObject); 
+                                    DeserializeGenres(jsonObject);
+                                    DeserializeLanguages(jsonObject);
+                                    succes = true;
+                                }
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            if (ex is ArgumentNullException || ex is InvalidOperationException)
+                            catch (HttpRequestException hre)
                             {
-                                Console.WriteLine(movieId);
-                                ++_fetchCounter;
-                                continue;
+                                Console.WriteLine($"Exception thrown getting page data: {dynamicURL}");
+                                Console.WriteLine(hre.Message);
                             }
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        if (ex is ArgumentNullException || ex is InvalidOperationException)
+                        {
+                            Console.WriteLine($"Exception thrown getting page data: {dynamicURL}");
+                            Console.WriteLine(ex.Message);
+                            ++_fetchCounter;
+                            continue;
+                        }
+                    }
+                    Console.WriteLine("Fetch was needed");
                 }
                 ++_fetchCounter;
                 Console.WriteLine(_fetchCounter);
@@ -176,42 +188,6 @@ namespace ImdbBackend
 
             _db.Add(movieToAdd);
             _db.SaveChanges();
-        }
-
-        private async Task<List<int>> ForceToFetchIds(List<int> movieIds)
-        {
-            while (movieIds.Count() < 10000)
-            {
-                try
-                {
-                    movieIds = await GetMovieIds();
-                }
-                catch (HttpRequestException)
-                {
-                    continue;
-                }
-            }
-
-            return movieIds;
-        }
-
-        private async Task ForceToFetchDetails(List<int> movieIds)
-        {
-            while (_fetchCounter < movieIds.Count())
-            {
-                try
-                {
-                    await Update(movieIds);
-                }
-                catch (HttpRequestException)
-                {
-                    Console.WriteLine("sleep start");
-                    System.Threading.Thread.Sleep(30000);
-                    Console.WriteLine("sleep end");
-                    _fetchCounter = 0;
-                    continue;
-                }
-            }
         }
 
         private void DeleteFromDb(List<int> movieIds)
