@@ -23,11 +23,13 @@ namespace ImdbBackend.Controllers
             _db = db;
         }
 
-        [HttpGet]
-        public List<string> Get()
+        [HttpGet("{page}")]
+        public async Task<ActionResult<IEnumerable<Movie>>> GetTopRatedMovies(int page)
         {
-            
-            return null;
+            int from = 20 * page - 20; //in the db ids start w/1, not 0, but first we want to skip 0 items
+            int to = 20 * page;
+            var movies = _db.Movies.OrderByDescending(m => m.VoteCount).ThenByDescending(m => m.VoteAverage).Skip(from).Take(to);
+            return await movies.ToListAsync();
         }
     }
 }
