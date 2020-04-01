@@ -24,9 +24,10 @@ namespace ImdbBackend.Controllers
         }
 
         [HttpGet]
-        public Movie Get()
-        { 
-            return null; //_db.Movies.Include(movie => movie.MovieGenres).Include(movie => movie.MovieLanguages).Single(movie => movie.OriginalTitle.Equals("LOL"));
+        public List<string> Get()
+        {
+            
+            return null;
         }
     }
 }
