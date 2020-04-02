@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Http.Cors;
 using DataAccessLibrary.DataAccess;
 using DataAccessLibrary.Models;
 using Microsoft.AspNetCore.Http;
@@ -16,12 +15,10 @@ namespace BackupProject.Controllers
     [ApiController]
     public class AllMoviesController : ControllerBase
     {
-        private readonly ILogger<AllMoviesController> _logger;
         private readonly MovieContext _db;
 
-        public AllMoviesController(ILogger<AllMoviesController> logger, MovieContext db)
+        public AllMoviesController(MovieContext db)
         {
-            _logger = logger;
             _db = db;
         }
 
