@@ -6,7 +6,7 @@ using System.Text;
 
 namespace DataAccessLibrary.FetchModels
 {
-    public class FetchModelForMovieDetails
+    public class MovieDetails
     {
         public int Id { get; set; }
         public int OriginalId { get; set; }
