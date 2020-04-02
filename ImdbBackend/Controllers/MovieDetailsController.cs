@@ -27,13 +27,13 @@ namespace BackupProject.Controllers
             var movie = await _db.Movies.FindAsync(id);
             var movieGenreIds = _db.MovieGenres.Where(mg => mg.MovieId == id).Select(mg => mg.GenreId);
             var movieLanguageIds = _db.MovieLanguages.Where(ml => ml.MovieId == id).Select(ml => ml.LanguageId);
-            List<Genre> genres = _db.Genres.Where(g => movieGenreIds.Contains(g.Id)).ToList();
-            List<Language> languages = _db.Languages.Where(l => movieLanguageIds.Contains(l.Id)).ToList();
+            List<string> genres = _db.Genres.Where(g => movieGenreIds.Contains(g.Id)).Select(g => g.Name).ToList();
+            List<string> languages = _db.Languages.Where(l => movieLanguageIds.Contains(l.Id)).Select(l => l.Name).ToList();
             MovieDetails MovieDetails = ConvertMovieObject(movie, genres, languages);
             return MovieDetails;
         }
 
-        private MovieDetails ConvertMovieObject(Movie movie, List<Genre> genres, List<Language> languages)
+        private MovieDetails ConvertMovieObject(Movie movie, List<string> genres, List<string> languages)
         {
             MovieDetails movieDetails = new MovieDetails()
             {

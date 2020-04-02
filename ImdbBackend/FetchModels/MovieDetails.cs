@@ -12,8 +12,8 @@ namespace DataAccessLibrary.FetchModels
         public int OriginalId { get; set; }
         public string OriginalTitle { get; set; }
         public string Overview { get; set; }
-        public List<Genre> MovieGenres { get; set; }
-        public List<Language> MovieLanguages { get; set; }
+        public List<string> MovieGenres { get; set; }
+        public List<string> MovieLanguages { get; set; }
         public string ReleaseDate { get; set; }
         public int Runtime { get; set; }
         public double VoteAverage { get; set; }
