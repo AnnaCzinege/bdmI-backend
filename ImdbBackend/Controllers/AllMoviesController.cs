@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataAccessLibrary.DataAccess;
 using DataAccessLibrary.Models;
+using ImdbBackend.FetchModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,10 +23,25 @@ namespace BackupProject.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Movie>>> GetAllMovies()
+        public async Task<ActionResult<List<AllMovies>>> GetAllMovies()
         {
-            var movies = _db.Movies;
-            return await movies.ToListAsync();
+            var movies = await _db.Movies.ToListAsync();
+            List<AllMovies> allMovies = ConvertMovieObjects(movies);
+            return allMovies;
+        }
+
+        private List<AllMovies> ConvertMovieObjects(List<Movie> movies)
+        {
+            List<AllMovies> allMovies = new List<AllMovies>();
+            foreach (var movie in movies)
+            {
+                allMovies.Add(new AllMovies() { 
+                    Id = movie.Id,
+                    OriginalId = movie.OriginalId,
+                    OriginalTitle = movie.OriginalTitle
+                });
+            }
+            return allMovies;
         }
     }
 }
