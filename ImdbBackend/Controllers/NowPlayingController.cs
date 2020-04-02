@@ -25,7 +25,7 @@ namespace ImdbBackend.Controllers
         public async Task<ActionResult<IEnumerable<Movie>>> GetNowPlayingMovies(int page)
         {
             int moviesPerPage = 20;
-            int from = page * moviesPerPage - 19; //in the db ids start w/1, not 0, but first we want to skip 0 items
+            int from = page * moviesPerPage - 20; //in the db ids start w/1, not 0, but first we want to skip 0 items
             long currentDateOneMonthAgo = Convert.ToInt64(new DateTime(DateTime.Today.Year, DateTime.Today.Month - 1, 1).ToString("yyyyMMdd"));
             long currentDate = Convert.ToInt64(DateTime.Now.ToString("yyyyMMdd"));
             return await _db.Movies.Where(movie => Convert.ToInt64(movie.ReleaseDate.Replace("-", "")) > currentDateOneMonthAgo && Convert.ToInt64(movie.ReleaseDate.Replace("-", "")) < currentDate).OrderByDescending(movie => Convert.ToInt64(movie.ReleaseDate.Replace("-", ""))).Skip(from).Take(moviesPerPage).ToListAsync();
