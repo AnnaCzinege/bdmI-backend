@@ -35,7 +35,7 @@ namespace ImdbBackend
                 options.AddPolicy(MyAllowSpecificOrigins,
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost").AllowAnyHeader().AllowAnyMethod();
+                    builder.WithOrigins("http://localhost:44314", "http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
                 });
             });
             services.AddDbContext<MovieContext>(option => { option.UseSqlServer(Configuration.GetConnectionString("Default")); });
