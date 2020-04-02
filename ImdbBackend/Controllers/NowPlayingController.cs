@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ImdbBackend.Controllers
 {
-    [Route("[controller]")]
+    [Route("now-playing")]
     [ApiController]
     public class NowPlayingController : ControllerBase
     {

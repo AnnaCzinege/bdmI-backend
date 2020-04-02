@@ -10,7 +10,7 @@ namespace ImdbBackend.Controllers
 {
     
     [ApiController]
-    [Route("[controller]")]
+    [Route("top-rated")]
     public class TopRatedController : ControllerBase
     {
         private readonly MovieContext _db;
