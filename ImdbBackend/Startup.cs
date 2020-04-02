@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Http;
+using System.Web.Http.Cors;
 using Autofac;
 using DataAccessLibrary.DataAccess;
 using Microsoft.AspNetCore.Builder;
@@ -35,7 +37,7 @@ namespace ImdbBackend
                 options.AddPolicy(MyAllowSpecificOrigins,
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost").AllowAnyHeader().AllowAnyMethod();
+                    builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
                 });
             });
             services.AddDbContext<MovieContext>(option => { option.UseSqlServer(Configuration.GetConnectionString("Default")); });
@@ -51,13 +53,11 @@ namespace ImdbBackend
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors(MyAllowSpecificOrigins);
-
             app.UseHttpsRedirection();
 
-            app.UseRouting();
+            app.UseCors(MyAllowSpecificOrigins);
 
-            app.UseCors();
+            app.UseRouting();
 
             app.UseAuthorization();
 
