@@ -24,8 +24,7 @@ namespace ImdbBackend
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            List<int> movieIds = new List<int>();
-            movieIds = await GetMovieIds();
+            List<int> movieIds = await GetMovieIds();
             DeleteFromDb(movieIds);
             await Update(movieIds);
             Console.WriteLine("Database update completed!");
