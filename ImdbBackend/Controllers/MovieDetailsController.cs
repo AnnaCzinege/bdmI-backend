@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Http.Cors;
 using DataAccessLibrary.DataAccess;
 using DataAccessLibrary.FetchModels;
 using DataAccessLibrary.Models;
@@ -17,12 +16,10 @@ namespace BackupProject.Controllers
     [ApiController]
     public class MovieDetailsController : ControllerBase
     {
-        private readonly ILogger<MovieDetailsController> _logger;
         private readonly MovieContext _db;
 
-        public MovieDetailsController(ILogger<MovieDetailsController> logger, MovieContext db)
+        public MovieDetailsController(MovieContext db)
         {
-            _logger = logger;
             _db = db;
         }
 
