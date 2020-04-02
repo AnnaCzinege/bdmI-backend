@@ -22,20 +22,20 @@ namespace BackupProject.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<FetchModelForMovieDetails>> GetMovieDetails(int id)
+        public async Task<ActionResult<MovieDetails>> GetMovieDetails(int id)
         {
             var movie = await _db.Movies.FindAsync(id);
             var movieGenreIds = _db.MovieGenres.Where(mg => mg.MovieId == id).Select(mg => mg.GenreId);
             var movieLanguageIds = _db.MovieLanguages.Where(ml => ml.MovieId == id).Select(ml => ml.LanguageId);
             List<Genre> genres = _db.Genres.Where(g => movieGenreIds.Contains(g.Id)).ToList();
             List<Language> languages = _db.Languages.Where(l => movieLanguageIds.Contains(l.Id)).ToList();
-            FetchModelForMovieDetails MovieDetails = ConvertMovieObject(movie, genres, languages);
+            MovieDetails MovieDetails = ConvertMovieObject(movie, genres, languages);
             return MovieDetails;
         }
 
-        private FetchModelForMovieDetails ConvertMovieObject(Movie movie, List<Genre> genres, List<Language> languages)
+        private MovieDetails ConvertMovieObject(Movie movie, List<Genre> genres, List<Language> languages)
         {
-            FetchModelForMovieDetails movieDetails = new FetchModelForMovieDetails()
+            MovieDetails movieDetails = new MovieDetails()
             {
                 Id = movie.Id,
                 OriginalId = movie.OriginalId,
