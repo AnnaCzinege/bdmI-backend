@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 using DataAccessLibrary.DataAccess;
 using DataAccessLibrary.FetchModels;
 using DataAccessLibrary.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace BackupProject.Controllers
 {
