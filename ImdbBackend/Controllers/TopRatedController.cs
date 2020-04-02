@@ -30,7 +30,7 @@ namespace ImdbBackend.Controllers
         {
             int from = 20 * page - 20; //in the db ids start w/1, not 0, but first we want to skip 0 items
             int to = 20 * page;
-            var movies = _db.Movies.OrderByDescending(m => m.VoteCount).ThenByDescending(m => m.VoteAverage).Skip(from).Take(to);
+            var movies = _db.Movies.Where(m => m.VoteCount > 1000).OrderByDescending(m => m.VoteAverage).Skip(from).Take(to);
             return await movies.ToListAsync();
         }
     }
