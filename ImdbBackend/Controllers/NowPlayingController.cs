@@ -24,7 +24,6 @@ namespace ImdbBackend.Controllers
         [HttpGet("{page}")]
         public async Task<ActionResult<IEnumerable<Movie>>> GetNowPlayingMovies(int page)
         {
-            CultureInfo provider = CultureInfo.InvariantCulture;
             int moviesPerPage = 20;
             int from = page * moviesPerPage - 19; //in the db ids start w/1, not 0, but first we want to skip 0 items
             long currentDateOneMonthAgo = Convert.ToInt64(new DateTime(DateTime.Today.Year, DateTime.Today.Month - 1, 1).ToString("yyyyMMdd"));
