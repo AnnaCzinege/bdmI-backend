@@ -30,14 +30,14 @@ namespace ImdbBackend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options =>
-            {
-                options.AddPolicy(MyAllowSpecificOrigins,
-                builder =>
-                {
-                    builder.WithOrigins("http://localhost:44314", "http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
-                });
-            });
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy(MyAllowSpecificOrigins,
+            //    builder =>
+            //    {
+            //        builder.WithOrigins("http://localhost:44314", "http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
+            //    });
+            //});
             services.AddDbContext<MovieContext>(option => { option.UseSqlServer(Configuration.GetConnectionString("Default")); });
             services.AddHostedService<UpdateDatabase>();
             services.AddControllers();
@@ -57,7 +57,7 @@ namespace ImdbBackend
 
             app.UseRouting();
 
-            app.UseCors();
+            //app.UseCors();
 
             app.UseAuthorization();
 
