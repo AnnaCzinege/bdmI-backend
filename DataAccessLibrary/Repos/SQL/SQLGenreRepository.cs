@@ -1,4 +1,5 @@
 ﻿using DataAccessLibrary.DataAccess;
+using DataAccessLibrary.Models;
 using DataAccessLibrary.Repos.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -7,14 +8,10 @@ using System.Threading.Tasks;
 
 namespace DataAccessLibrary.Repos.SQL
 {
-    public class SQLGenreRepository : IGenreRepository
+    public class SQLGenreRepository : SQLBaseRepository<Genre>, IGenreRepository
     {
-        private readonly MovieContext _context;
 
-        public SQLGenreRepository(MovieContext context)
-        {
-            _context = context;
-        }
+        public SQLGenreRepository(MovieContext context) : base(context) { }
 
         public async Task<List<string>> GetGenres(List<int> movieGenreIds)
         {

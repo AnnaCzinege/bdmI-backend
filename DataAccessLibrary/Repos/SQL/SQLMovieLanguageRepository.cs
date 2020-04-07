@@ -1,4 +1,5 @@
 ﻿using DataAccessLibrary.DataAccess;
+using DataAccessLibrary.Models;
 using DataAccessLibrary.Repos.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -7,14 +8,10 @@ using System.Threading.Tasks;
 
 namespace DataAccessLibrary.Repos.SQL
 {
-    public class SQLMovieLanguageRepository : IMovieLanguageRepository
+    public class SQLMovieLanguageRepository : SQLBaseRepository<MovieLanguage>, IMovieLanguageRepository
     {
-        private readonly MovieContext _context;
 
-        public SQLMovieLanguageRepository(MovieContext context)
-        {
-            _context = context;
-        }
+        public SQLMovieLanguageRepository(MovieContext context) : base(context) { }
 
         public async Task<List<int>> GetMovieLanguageIds(int id)
         {

@@ -1,6 +1,5 @@
 ﻿
 using Autofac;
-using DataAccessLibrary.Repos;
 using DataAccessLibrary.Repos.Interfaces;
 using DataAccessLibrary.Repos.SQL;
 using DataAccessLibrary.RepositoryContainer;

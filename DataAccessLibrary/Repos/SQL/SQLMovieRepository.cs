@@ -9,14 +9,11 @@ using System.Threading.Tasks;
 
 namespace DataAccessLibrary.Repos.SQL
 {
-    public class SQLMovieRepository : IMovieRepository
+    public class SQLMovieRepository : SQLBaseRepository<Movie>, IMovieRepository
     {
-        private readonly MovieContext _context;
 
-        public SQLMovieRepository(MovieContext context)
-        {
-            _context = context;
-        }
+        public SQLMovieRepository(MovieContext context) : base(context) { }
+
 
         public async Task<List<Movie>> GetAllMovies()
         {
