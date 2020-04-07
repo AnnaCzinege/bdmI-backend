@@ -7,5 +7,7 @@ namespace DataAccessLibrary.Repos.Interfaces
     public interface IMovieGenreRepository : IGenericRepository<MovieGenre>
     {
         Task<List<int>> GetMovieGenreIds(int id);
+
+        bool IsPairExist(int movieId, int genreId);
     }
 }

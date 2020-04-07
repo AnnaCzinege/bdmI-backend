@@ -18,5 +18,10 @@ namespace DataAccessLibrary.Repos.SQL
                                             .Select(mg => mg.GenreId)
                                             .ToListAsync();
         }
+
+        public bool IsPairExist(int movieId, int genreId)
+        {
+            return _context.MovieGenres.Where(mg => mg.MovieId == movieId).Any(mg => mg.GenreId == genreId);
+        }
     }
 }

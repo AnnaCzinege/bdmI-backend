@@ -44,7 +44,7 @@ namespace ImdbBackend.Controllers
         [HttpGet("upcoming/{page}")]
         public async Task<ActionResult<List<Movie>>> GetUpcominMovies(int page)
         {
-            return await _unitOfWork.MovieRepository.GetUpcominMovies(page);
+            return await _unitOfWork.MovieRepository.GetUpcomingMovies(page);
         }
 
 

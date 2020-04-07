@@ -1,6 +1,5 @@
-﻿using DataAccessLibrary.DataAccess;
-using DataAccessLibrary.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using DataAccessLibrary.Models;
+using DataAccessLibrary.RepositoryContainer;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Linq;
 using System;
@@ -14,18 +13,18 @@ namespace ImdbBackend
 {
     public class UpdateDatabase : BackgroundService
     {
-        private readonly MovieContext _db;
+        private readonly IUnitOfWork _unitOfWork;
         private int _fetchCounter = 0;
 
-        public UpdateDatabase(MovieContext db)
+        public UpdateDatabase(IUnitOfWork unitOfWork)
         {
-            _db = db;
+            _unitOfWork = unitOfWork;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             List<int> movieIds = await GetMovieIds();
-            DeleteFromDb(movieIds);
+            await DeleteFromDb(movieIds);
             await Update(movieIds);
             Console.WriteLine("Database update completed!");
         }
@@ -44,14 +43,10 @@ namespace ImdbBackend
                 {
                     try
                     {
-                        using (HttpClient client = new HttpClient())
-                        using (HttpResponseMessage res = await client.GetAsync(requestUri))
-                        using (HttpContent content = res.Content)
-                        {
-                            string data = await content.ReadAsStringAsync();
-                            movieIds.AddRange(JObject.Parse(data)["results"].Select(item => Convert.ToInt32(item["id"])).ToList());
-                            success = true;
-                        }
+                        using HttpResponseMessage res = await new HttpClient().GetAsync(requestUri);
+                        string data = await res.Content.ReadAsStringAsync();
+                        movieIds.AddRange(JObject.Parse(data)["results"].Select(item => Convert.ToInt32(item["id"])).ToList());
+                        success = true;
                     }
                     catch (HttpRequestException hre)
                     {
@@ -68,7 +63,7 @@ namespace ImdbBackend
         {
             foreach (var movieId in movieIds)
             {
-                if (!_db.Movies.Any(movie => movie.OriginalId == movieId))
+                if (!_unitOfWork.MovieRepository.IsIdExist(movieId))
                 {
                     string dynamicURL = $"https://api.themoviedb.org/3/movie/{movieId}?api_key=bb29364ab81ef62380611d162d85ecdb&language=en-US";
                     try
@@ -78,18 +73,15 @@ namespace ImdbBackend
                         {
                             try
                             {
-                                using (HttpClient client = new HttpClient())
-                                using (HttpResponseMessage res = await client.GetAsync(dynamicURL))
-                                using (HttpContent content = res.Content)
-                                {
-                                    string data = await content.ReadAsStringAsync();
-                                    JToken jsonObject = JObject.Parse(data);
-                                    //deserialize and add
-                                    DeserializeMovie(jsonObject); 
-                                    DeserializeGenres(jsonObject);
-                                    DeserializeLanguages(jsonObject);
-                                    succes = true;
-                                }
+                                using HttpResponseMessage res = await new HttpClient().GetAsync(dynamicURL);
+                                string data = await res.Content.ReadAsStringAsync();
+                                JToken jsonObject = JObject.Parse(data);
+                                await AddNewMovie(jsonObject);
+                                await AddNewGenres(jsonObject);
+                                await AddNewMovieGenre(jsonObject);
+                                await AddNewLanguages(jsonObject);
+                                await AddNewMovieLanguages(jsonObject);
+                                succes = true;
                             }
                             catch (HttpRequestException hre)
                             {
@@ -115,64 +107,76 @@ namespace ImdbBackend
             }
         }
 
-        private void DeserializeLanguages(JToken jsonObject)
+        private async Task AddNewLanguages(JToken jsonObject)
         {
             foreach (var language in jsonObject["spoken_languages"])
             {
                 string currentLanguageName = Convert.ToString(language["name"]);
 
-                if (!_db.Languages.Any(l => l.Name == currentLanguageName))
+                if (!_unitOfWork.LanguageRepository.IsNameExist(currentLanguageName))
                 {
-                    _db.Add(new Language() { Name = currentLanguageName });
-                    _db.SaveChanges();
-                }
-
-                int currentMovieId = _db.Movies.Single(m => m.OriginalId == Convert.ToInt32(jsonObject["id"])).Id;
-                int currentLanguageId = _db.Languages.Single(l => l.Name == Convert.ToString(language["name"])).Id;
-
-                if (!_db.MovieLanguages.Where(ml=>ml.MovieId == currentMovieId).Any(ml => ml.LanguageId == currentLanguageId))
-                {
-                    _db.Add(new MovieLanguage()
-                    {
-                        LanguageId = currentLanguageId,
-                        MovieId = currentMovieId
-                    });
-                    _db.SaveChanges();
+                   await _unitOfWork.LanguageRepository.AddAsync(new Language() { Name = currentLanguageName });
+                   await _unitOfWork.SaveAsync();
                 }
             }
         }
 
-        private void DeserializeGenres(JToken jsonObject)
+        private async Task AddNewMovieLanguages(JToken jsonObject)
+        {
+            foreach (var language in jsonObject["spoken_languages"])
+            {
+                int currentMovieId = await _unitOfWork.MovieRepository.GetIdByOriginalId(Convert.ToInt32(jsonObject["id"]));
+                int currentLanguageId = await _unitOfWork.LanguageRepository.GetIdByName(Convert.ToString(language["name"]));
+
+                if (!_unitOfWork.MovieLanguageRepository.IsPairExist(currentMovieId, currentLanguageId))
+                {
+                    await _unitOfWork.MovieLanguageRepository.AddAsync(new MovieLanguage()
+                    {
+                        LanguageId = currentLanguageId,
+                        MovieId = currentMovieId
+                    });
+                    await _unitOfWork.SaveAsync();
+                }
+            }
+        }
+
+        private async Task AddNewGenres(JToken jsonObject)
         {
             foreach (var genre in jsonObject["genres"])
             {
                 string currentGenreName = Convert.ToString(genre["name"]);
 
-                if (!_db.Genres.Any(g => g.Name == currentGenreName))
+                if (!_unitOfWork.GenreRepository.IsNameExist(currentGenreName))
                 {
-                    _db.Add(new Genre() { Name = currentGenreName });
-                    _db.SaveChanges();
+                    await _unitOfWork.GenreRepository.AddAsync(new Genre() { Name = currentGenreName });
+                    await _unitOfWork.SaveAsync();
                 }
+            }
+        }
 
-                int currentMovieId = _db.Movies.Single(m => m.OriginalId == Convert.ToInt32(jsonObject["id"])).Id;
-                int currentGenreId = _db.Genres.Single(g => g.Name == Convert.ToString(genre["name"])).Id;
+        private async Task AddNewMovieGenre(JToken jsonObject)
+        {
+            foreach (var genre in jsonObject["genres"])
+            {
+                int currentMovieId = await _unitOfWork.MovieRepository.GetIdByOriginalId(Convert.ToInt32(jsonObject["id"]));
+                int currentGenreId = await _unitOfWork.GenreRepository.GetIdByName(Convert.ToString(genre["name"]));
 
-                if (!_db.MovieGenres.Where(mg => mg.MovieId == currentMovieId).Any(mg => mg.GenreId == currentGenreId))
+                if (!_unitOfWork.MovieGenreRepository.IsPairExist(currentMovieId, currentGenreId))
                 {
-                    _db.Add(new MovieGenre() 
+                    await _unitOfWork.MovieGenreRepository.AddAsync(new MovieGenre() 
                     {
                         GenreId = currentGenreId,
                         MovieId = currentMovieId
                     });
-                    _db.SaveChanges();
+                    await _unitOfWork.SaveAsync();
                 }
                
             }
         }
 
-        private void DeserializeMovie(JToken jsonObject)
+        private async Task AddNewMovie(JToken jsonObject)
         {
-            Movie movieToAdd = new Movie()
+            await _unitOfWork.MovieRepository.AddAsync(new Movie()
             {
                 OriginalId = Convert.ToInt32(jsonObject["id"]),
                 OriginalTitle = Convert.ToString(jsonObject["original_title"]),
@@ -183,23 +187,20 @@ namespace ImdbBackend
                 VoteCount = Convert.ToString(jsonObject["vote_count"]).Length == 0 ? 0 : Convert.ToInt32(jsonObject["vote_count"]),
                 Popularity = Convert.ToString(jsonObject["popularity"]).Length == 0 ? 0.0 : Convert.ToDouble(jsonObject["popularity"]),
                 PosterPath = Convert.ToString(jsonObject["poster_path"])
-            };
-
-            _db.Add(movieToAdd);
-            _db.SaveChanges();
+            });
+            await _unitOfWork.SaveAsync();
         }
 
-        private void DeleteFromDb(List<int> movieIds)
+        private async Task DeleteFromDb(List<int> movieIds)
         {
-            List<int> movieIdsFromDb = _db.Movies.Select(movie => movie.OriginalId).ToList();
+            List<int> movieIdsFromDb = await _unitOfWork.MovieRepository.GetAllOriginalId();
 
             foreach (int movieIdFromDb in movieIdsFromDb)
             {
-                if (!movieIds.Contains(movieIdFromDb))
+                if (!movieIds.Any(mId => mId == movieIdFromDb))
                 {
-                    Movie dataToDelete = _db.Movies.Single(movie => movie.OriginalId == movieIdFromDb);
-                    _db.Remove(dataToDelete);
-                    _db.SaveChanges();
+                    _unitOfWork.MovieRepository.Remove(await _unitOfWork.MovieRepository.GetMovieByOriginalId(movieIdFromDb));
+                    await _unitOfWork.SaveAsync();
                 }
             }
         }

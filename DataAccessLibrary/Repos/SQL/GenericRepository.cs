@@ -18,7 +18,7 @@ namespace DataAccessLibrary.Repos.SQL
             await _context.Set<TEntity>().AddAsync(entity);
         }
 
-        public void DeleteAsync(TEntity entity)
+        public void Remove(TEntity entity)
         {
              _context.Set<TEntity>().Remove(entity);
         }

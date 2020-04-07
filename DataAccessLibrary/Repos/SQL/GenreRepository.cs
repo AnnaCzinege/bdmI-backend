@@ -18,5 +18,16 @@ namespace DataAccessLibrary.Repos.SQL
                                         .Select(g => g.Name)
                                         .ToListAsync();
         }
+
+        public async Task<int> GetIdByName(string name)
+        {
+            Genre genre = await _context.Genres.FirstAsync(g => g.Name == name);
+            return genre.Id;
+        }
+
+        public bool IsNameExist(string name)
+        {
+            return _context.Genres.Any(g => g.Name == name);
+        }
     }
 }
