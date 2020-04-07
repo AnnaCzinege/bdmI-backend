@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 
 namespace DataAccessLibrary.Repos
 {
-    public class SQLMovieLanguageRepository : IMovieLanguageRepository
+    public class SQLLanguageRepository : ILanguageRepository
     {
         private readonly MovieContext _context;
 
-        public SQLMovieLanguageRepository(MovieContext context)
+        public SQLLanguageRepository(MovieContext context)
         {
             _context = context;
         }
 
-        public async Task<List<int>> GetMovieLanguageIds(int id)
+        public async Task<List<string>> GetLanguages(List<int> movieLanguageIds)
         {
-            return await _context.MovieLanguages.Where(ml => ml.MovieId == id).Select(ml => ml.LanguageId).ToListAsync();
+            return await _context.Languages.Where(l => movieLanguageIds.Contains(l.Id)).Select(l => l.Name).ToListAsync();
         }
     }
 }

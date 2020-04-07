@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace DataAccessLibrary.Repos
 {
-    public interface IMovieLanguageRepository
+    public interface ILanguageRepository
     {
-        Task<List<int>> GetMovieLanguageIds(int id);
+        Task<List<string>> GetLanguages(List<int> movieLanguageIds);
     }
 }

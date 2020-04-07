@@ -17,9 +17,9 @@ namespace DataAccessLibrary.Repos
 
         Task<List<Movie>> GetPopularMovies(int page);
 
-        Task<ActionResult<IEnumerable<Movie>>> GetTopRatedMovies(int page);
+        Task<List<Movie>> GetTopRatedMovies(int page);
 
-        Task<ActionResult<IEnumerable<Movie>>> GetUpcominMovies(int page);
+        Task<List<Movie>> GetUpcominMovies(int page);
 
     }
 }

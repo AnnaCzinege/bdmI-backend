@@ -5,12 +5,11 @@ using System.Threading.Tasks;
 
 namespace DataAccessLibrary.Repos
 {
-    class MockMovieLanguageRepository : IMovieLanguageRepository
+    public class MockLanguageRepository : ILanguageRepository
     {
-        public Task<List<int>> GetMovieLanguageIds(int id)
+        public Task<List<string>> GetLanguages(List<int> movieLanguageIds)
         {
             throw new NotImplementedException();
         }
-
     }
 }

@@ -20,21 +20,31 @@ namespace ImdbBackend.Controllers
 
         private readonly IMovieLanguageRepository _movieLanguageRepository;
 
-        public MovieDetailsController(IMovieRepository movieRepository, IMovieGenreRepository movieGenreRepository, IMovieLanguageRepository movieLanguageRepository)
+        private readonly IGenreRepository _genreRepository;
+
+        private readonly ILanguageRepository _languageRepository;
+
+        public MovieDetailsController(IMovieRepository movieRepository,
+                                        IMovieGenreRepository movieGenreRepository,
+                                        IMovieLanguageRepository movieLanguageRepository,
+                                        IGenreRepository genreRepository,
+                                        ILanguageRepository languageRepository)
         {
             _movieRepository = movieRepository;
             _movieGenreRepository = movieGenreRepository;
             _movieLanguageRepository = movieLanguageRepository;
+            _genreRepository = genreRepository;
+            _languageRepository = languageRepository;
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<MovieDetails>> GetMovieDetails(int id)
         {
             var movie = await _movieRepository.GetMovieDetails(id);
-            var movieGenreIds = _movieGenreRepository.GetMovieGenreIds(id);
-            var movieLanguageIds = _movieLanguageRepository.GetMovieLanguageIds(id);
-            List<string> genres = _db.Genres.Where(g => movieGenreIds.Contains(g.Id)).Select(g => g.Name).ToList();
-            List<string> languages = _db.Languages.Where(l => movieLanguageIds.Contains(l.Id)).Select(l => l.Name).ToList();
+            List<int> movieGenreIds = await _movieGenreRepository.GetMovieGenreIds(id);
+            var movieLanguageIds = await _movieLanguageRepository.GetMovieLanguageIds(id);
+            List<string> genres = await _genreRepository.GetGenres(movieGenreIds);
+            List<string> languages = await _languageRepository.GetLanguages(movieLanguageIds);
             MovieDetails MovieDetails = ConvertMovieObject(movie, genres, languages);
             return MovieDetails;
         }

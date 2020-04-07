@@ -22,6 +22,6 @@ namespace ImdbBackend
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                }).UseServiceProviderFactory(new AutofacServiceProviderFactory());
+                });
     }
 }

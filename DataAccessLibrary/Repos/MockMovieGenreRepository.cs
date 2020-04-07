@@ -4,7 +4,8 @@ using System.Text;
 
 namespace DataAccessLibrary.Repos
 {
-    class MockMovieGenreRepository
+    public class MockMovieGenreRepository
     {
+ 
     }
 }
