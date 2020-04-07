@@ -1,19 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Autofac;
 using DataAccessLibrary.DataAccess;
-using DataAccessLibrary.Repos;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace ImdbBackend
 {
@@ -40,13 +32,6 @@ namespace ImdbBackend
                 });
             });
             services.AddDbContext<MovieContext>(option => { option.UseSqlServer(Configuration.GetConnectionString("Default")); });
-            services.AddScoped<MovieContext>();
-            services.AddScoped<IMovieRepository, SQLMovieRepository>();
-            services.AddScoped<IGenreRepository, SQLGenreRepository>();
-            services.AddScoped<IMovieGenreRepository, SQLMovieGenreRepository>();
-            services.AddScoped<IMovieLanguageRepository, SQLMovieLanguageRepository>();
-            services.AddScoped<IGenreRepository, SQLGenreRepository>();
-            services.AddScoped<ILanguageRepository, SQLLanguageRepository>();
             services.AddHostedService<UpdateDatabase>();
             services.AddControllers();
         }
@@ -73,5 +58,10 @@ namespace ImdbBackend
             });
         }
 
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            //Autofac configuration
+           builder.RegisterModule<DALAutofacModule>();
+        }
     }
 }
