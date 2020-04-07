@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repos;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ImdbBackend.Controllers
 {
@@ -13,7 +11,7 @@ namespace ImdbBackend.Controllers
     [Route("top-rated")]
     public class TopRatedController : ControllerBase
     {
-        private IMovieRepository _movieRepository;
+        private readonly IMovieRepository _movieRepository;
 
         public TopRatedController(IMovieRepository movieRepository)
         {
@@ -21,7 +19,7 @@ namespace ImdbBackend.Controllers
         }
 
         [HttpGet("{page}")]
-        public async Task<ActionResult<IEnumerable<Movie>>> GetTopRatedMovies(int page)
+        public async Task<ActionResult<List<Movie>>> GetTopRatedMovies(int page)
         {
             return await _movieRepository.GetTopRatedMovies(page);
         }

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using DataAccessLibrary.DataAccess;
 using DataAccessLibrary.Models;
+using DataAccessLibrary.Repos;
 using DataAccessLibrary.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ImdbBackend.Controllers
 {
@@ -14,17 +12,17 @@ namespace ImdbBackend.Controllers
     [ApiController]
     public class AllMoviesController : ControllerBase
     {
-        private IMovieRepository
+        private readonly IMovieRepository _movieRepository;
 
-        public AllMoviesController(MovieContext db)
+        public AllMoviesController(IMovieRepository movieRepository)
         {
-            _db = db;
+            _movieRepository = movieRepository;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<AllMovies>>> GetAllMovies()
         {
-            var movies = await 
+            var movies = await _movieRepository.GetAllMovies();
             List<AllMovies> allMovies = ConvertMovieObjects(movies);
             return allMovies;
         }

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using DataAccessLibrary.DataAccess;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repos;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ImdbBackend.Controllers
 {
@@ -15,7 +10,7 @@ namespace ImdbBackend.Controllers
     [ApiController]
     public class NowPlayingController : ControllerBase
     {
-        private IMovieRepository _movieRepository;
+        private readonly IMovieRepository _movieRepository;
 
         public NowPlayingController(IMovieRepository movieRepository)
         {

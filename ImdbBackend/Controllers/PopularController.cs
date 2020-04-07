@@ -5,7 +5,6 @@ using DataAccessLibrary.DataAccess;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repos;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ImdbBackend.Controllers
 {
@@ -13,7 +12,7 @@ namespace ImdbBackend.Controllers
     [ApiController]
     public class PopularController : ControllerBase
     {
-        private IMovieRepository _movieRepository;
+        private readonly IMovieRepository _movieRepository;
 
         public PopularController(IMovieRepository movieRepository)
         {
@@ -21,7 +20,7 @@ namespace ImdbBackend.Controllers
         }
 
         [HttpGet("{page}")]
-        public async Task<ActionResult<IEnumerable<Movie>>> GetPopularMovies(int page)
+        public async Task<ActionResult<List<Movie>>> GetPopularMovies(int page)
         {
 
             return await _movieRepository.GetPopularMovies(page);
