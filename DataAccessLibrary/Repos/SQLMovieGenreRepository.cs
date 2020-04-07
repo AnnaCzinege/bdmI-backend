@@ -17,7 +17,7 @@ namespace DataAccessLibrary.Repos
             _context = context;
         }
 
-        public async Task<List<int>> GetMovieGenreIds(int id)
+        public async List<int> GetMovieGenreIds(int id)
         {
            return await _context.MovieGenres.Where(mg => mg.MovieId == id).Select(mg => mg.GenreId).ToListAsync();
         }

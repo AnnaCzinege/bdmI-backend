@@ -4,7 +4,8 @@ using System.Text;
 
 namespace DataAccessLibrary.Repos
 {
-    interface IMovieGenreRepository
+    public interface IMovieGenreRepository
     {
+        Task<List<int>> GetMovieGenreIds(int id);
     }
 }

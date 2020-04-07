@@ -1,10 +1,12 @@
-﻿using System;
+﻿using DataAccessLibrary.Models;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace DataAccessLibrary.Repos
 {
-    interface IGenreRepository
+    public interface IGenreRepository
     {
+        Task<List<string>> GetGenres(List<int> movieGenreIds);
+
     }
 }
