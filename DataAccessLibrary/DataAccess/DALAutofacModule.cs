@@ -1,5 +1,4 @@
-﻿
-using Autofac;
+﻿using Autofac;
 using DataAccessLibrary.Repos.Interfaces;
 using DataAccessLibrary.Repos.SQL;
 using DataAccessLibrary.RepositoryContainer;
@@ -13,11 +12,11 @@ namespace DataAccessLibrary.DataAccess
         {
             base.Load(builder);
             builder.RegisterType<UnitOfWork>().As<IUnitOfWork>();
-            builder.RegisterType<SQLMovieRepository>().As<IMovieRepository>();
-            builder.RegisterType<SQLMovieGenreRepository>().As<IMovieGenreRepository>();
-            builder.RegisterType<SQLMovieLanguageRepository>().As<IMovieLanguageRepository>();
-            builder.RegisterType<SQLGenreRepository>().As<IGenreRepository>();
-            builder.RegisterType<SQLLanguageRepository>().As<ILanguageRepository>();
+            builder.RegisterType<MovieRepository>().As<IMovieRepository>();
+            builder.RegisterType<MovieGenreRepository>().As<IMovieGenreRepository>();
+            builder.RegisterType<MovieLanguageRepository>().As<IMovieLanguageRepository>();
+            builder.RegisterType<GenreRepository>().As<IGenreRepository>();
+            builder.RegisterType<LanguageRepository>().As<ILanguageRepository>();
             builder.RegisterType<MovieContext>().AsSelf().As<DbContext>().InstancePerLifetimeScope();
         }
     }

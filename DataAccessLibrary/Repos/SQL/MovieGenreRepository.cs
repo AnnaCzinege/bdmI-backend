@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace DataAccessLibrary.Repos.SQL
 {
-    public class SQLMovieGenreRepository : SQLBaseRepository<MovieGenre>, IMovieGenreRepository
+    public class MovieGenreRepository : GenericRepository<MovieGenre>, IMovieGenreRepository
     {
-        public SQLMovieGenreRepository(MovieContext context) : base(context) { }
+        public MovieGenreRepository(MovieContext context) : base(context) { }
 
         public async Task<List<int>> GetMovieGenreIds(int id)
         {

@@ -6,7 +6,7 @@ namespace DataAccessLibrary.Repos.Interfaces
     {
         Task AddAsync(TEntity entity);
 
-        Task DeleteAsync(TEntity entity);
+        void DeleteAsync(TEntity entity);
 
     }
 }

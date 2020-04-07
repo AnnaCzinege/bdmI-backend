@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DataAccessLibrary.DTOs
+namespace ImdbBackend.DTOs
 {
     public class MovieDetails
     {

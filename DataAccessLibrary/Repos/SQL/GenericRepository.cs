@@ -4,11 +4,11 @@ using DataAccessLibrary.DataAccess;
 
 namespace DataAccessLibrary.Repos.SQL
 {
-    public class SQLBaseRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
         protected readonly MovieContext _context;
 
-        public SQLBaseRepository(MovieContext context)
+        public GenericRepository(MovieContext context)
         {
             _context = context;
         }
@@ -18,7 +18,7 @@ namespace DataAccessLibrary.Repos.SQL
             await _context.Set<TEntity>().AddAsync(entity);
         }
 
-        public async Task DeleteAsync(TEntity entity)
+        public void DeleteAsync(TEntity entity)
         {
              _context.Set<TEntity>().Remove(entity);
         }

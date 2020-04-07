@@ -1,4 +1,4 @@
-﻿namespace DataAccessLibrary.DTOs
+﻿namespace ImdbBackend.DTOs
 {
     public class AllMovies
     {

@@ -1,6 +1,6 @@
 ﻿using DataAccessLibrary.Models;
 using DataAccessLibrary.RepositoryContainer;
-using DataAccessLibrary.DTOs;
+using ImdbBackend.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;

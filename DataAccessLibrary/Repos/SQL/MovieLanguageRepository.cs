@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace DataAccessLibrary.Repos.SQL
 {
-    public class SQLMovieLanguageRepository : SQLBaseRepository<MovieLanguage>, IMovieLanguageRepository
+    public class MovieLanguageRepository : GenericRepository<MovieLanguage>, IMovieLanguageRepository
     {
-        public SQLMovieLanguageRepository(MovieContext context) : base(context) { }
+        public MovieLanguageRepository(MovieContext context) : base(context) { }
 
         public async Task<List<int>> GetMovieLanguageIds(int id)
         {
