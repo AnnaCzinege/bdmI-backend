@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DataAccessLibrary.DataAccess;
-using DataAccessLibrary.FetchModels;
 using DataAccessLibrary.Models;
+using DataAccessLibrary.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

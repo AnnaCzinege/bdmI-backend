@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataAccessLibrary.DataAccess;
 using DataAccessLibrary.Models;
+using DataAccessLibrary.Repos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,21 +15,17 @@ namespace ImdbBackend.Controllers
     [ApiController]
     public class NowPlayingController : ControllerBase
     {
-        private readonly MovieContext _db;
+        private IMovieRepository _movieRepository;
 
-        public NowPlayingController( MovieContext db)
+        public NowPlayingController(IMovieRepository movieRepository)
         {
-            _db = db;
+            _movieRepository = movieRepository;
         }
 
         [HttpGet("{page}")]
-        public async Task<ActionResult<IEnumerable<Movie>>> GetNowPlayingMovies(int page)
+        public async Task<ActionResult<List<Movie>>> GetNowPlayingMovies(int page)
         {
-            int moviesPerPage = 20;
-            int from = page * moviesPerPage - 20; //in the db ids start w/1, not 0, but first we want to skip 0 items
-            long currentDateOneMonthAgo = Convert.ToInt64(new DateTime(DateTime.Today.Year, DateTime.Today.Month - 1, 1).ToString("yyyyMMdd"));
-            long currentDate = Convert.ToInt64(DateTime.Now.ToString("yyyyMMdd"));
-            return await _db.Movies.Where(movie => Convert.ToInt64(movie.ReleaseDate.Replace("-", "")) > currentDateOneMonthAgo && Convert.ToInt64(movie.ReleaseDate.Replace("-", "")) < currentDate).OrderByDescending(movie => Convert.ToInt64(movie.ReleaseDate.Replace("-", ""))).Skip(from).Take(moviesPerPage).ToListAsync();
+            return await _movieRepository.GetNowPlayingMovies(page);
         }
     }
 }
