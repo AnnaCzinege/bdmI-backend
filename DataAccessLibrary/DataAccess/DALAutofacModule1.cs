@@ -1,6 +1,9 @@
 ﻿
 using Autofac;
 using DataAccessLibrary.Repos;
+using DataAccessLibrary.Repos.Interfaces;
+using DataAccessLibrary.Repos.SQL;
+using DataAccessLibrary.RepositoryContainer;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLibrary.DataAccess
@@ -10,6 +13,7 @@ namespace DataAccessLibrary.DataAccess
         protected override void Load(ContainerBuilder builder)
         {
             base.Load(builder);
+            builder.RegisterType<UnitOfWork>().As<IUnitOfWork>();
             builder.RegisterType<SQLMovieRepository>().As<IMovieRepository>();
             builder.RegisterType<SQLMovieGenreRepository>().As<IMovieGenreRepository>();
             builder.RegisterType<SQLMovieLanguageRepository>().As<IMovieLanguageRepository>();
