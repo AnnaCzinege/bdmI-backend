@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccessLibrary.Repos
+namespace DataAccessLibrary.Repos.SQL
 {
     public class SQLLanguageRepository : ILanguageRepository
     {
@@ -19,7 +19,9 @@ namespace DataAccessLibrary.Repos
 
         public async Task<List<string>> GetLanguages(List<int> movieLanguageIds)
         {
-            return await _context.Languages.Where(l => movieLanguageIds.Contains(l.Id)).Select(l => l.Name).ToListAsync();
+            return await _context.Languages.Where(l => movieLanguageIds.Contains(l.Id))
+                                            .Select(l => l.Name)
+                                            .ToListAsync();
         }
     }
 }

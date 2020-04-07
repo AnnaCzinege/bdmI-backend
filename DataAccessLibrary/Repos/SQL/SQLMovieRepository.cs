@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccessLibrary.Repos
+namespace DataAccessLibrary.Repos.SQL
 {
     public class SQLMovieRepository : IMovieRepository
     {
@@ -37,10 +37,10 @@ namespace DataAccessLibrary.Repos
             long currentDateOneMonthAgo = Convert.ToInt64(new DateTime(DateTime.Today.Year, DateTime.Today.Month - 1, 1).ToString("yyyyMMdd"));
             long currentDate = Convert.ToInt64(DateTime.Now.ToString("yyyyMMdd"));
             return await _context.Movies.Where(movie => Convert.ToInt64(movie.ReleaseDate.Replace("-", "")) > currentDateOneMonthAgo && Convert.ToInt64(movie.ReleaseDate.Replace("-", "")) < currentDate)
-                .OrderByDescending(movie => Convert.ToInt64(movie.ReleaseDate.Replace("-", "")))
-                .Skip(from)
-                .Take(moviesPerPage)
-                .ToListAsync();
+                                        .OrderByDescending(movie => Convert.ToInt64(movie.ReleaseDate.Replace("-", "")))
+                                        .Skip(from)
+                                        .Take(moviesPerPage)
+                                        .ToListAsync();
         }
 
         public async Task<List<Movie>> GetPopularMovies(int page)
@@ -48,17 +48,20 @@ namespace DataAccessLibrary.Repos
             int moviesPerPage = 20;
             int from = page * moviesPerPage - moviesPerPage;
             return await _context.Movies.OrderByDescending(movie => movie.Popularity)
-                .Skip(from)
-                .Take(moviesPerPage)
-                .Select(movie => movie)
-                .ToListAsync();
+                                        .Skip(from)
+                                        .Take(moviesPerPage)
+                                        .Select(movie => movie)
+                                        .ToListAsync();
         }
 
         public async Task<List<Movie>> GetTopRatedMovies(int page)
         {
             int moviesPerPage = 20;
             int from = moviesPerPage * page - moviesPerPage;
-            var movies = _context.Movies.Where(m => m.VoteCount > 1000).OrderByDescending(m => m.VoteAverage).Skip(from).Take(moviesPerPage);
+            var movies = _context.Movies.Where(m => m.VoteCount > 1000)
+                                        .OrderByDescending(m => m.VoteAverage)
+                                        .Skip(from)
+                                        .Take(moviesPerPage);
             return await movies.ToListAsync();
         }
 
@@ -67,7 +70,10 @@ namespace DataAccessLibrary.Repos
             long currentDate = Convert.ToInt64(DateTime.Now.ToString("yyyyMMdd"));
             int moviesPerPage = 20;
             int from = moviesPerPage * page - moviesPerPage;
-            var movies = _context.Movies.Where(m => Convert.ToInt64(m.ReleaseDate.Replace("-", "")) > currentDate).OrderBy(m => Convert.ToInt64(m.ReleaseDate.Replace("-", ""))).Skip(from).Take(moviesPerPage);
+            var movies = _context.Movies.Where(m => Convert.ToInt64(m.ReleaseDate.Replace("-", "")) > currentDate)
+                                        .OrderBy(m => Convert.ToInt64(m.ReleaseDate.Replace("-", "")))
+                                        .Skip(from)
+                                        .Take(moviesPerPage);
             return await movies.ToListAsync();
         }
     }

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccessLibrary.Repos
+namespace DataAccessLibrary.Repos.SQL
 {
     public class SQLGenreRepository : IGenreRepository
     {
@@ -20,7 +20,9 @@ namespace DataAccessLibrary.Repos
 
         public async Task<List<string>> GetGenres(List<int> movieGenreIds)
         {
-            return await _context.Genres.Where(g => movieGenreIds.Contains(g.Id)).Select(g => g.Name).ToListAsync();
+            return await _context.Genres.Where(g => movieGenreIds.Contains(g.Id))
+                                        .Select(g => g.Name)
+                                        .ToListAsync();
         }
     }
 }

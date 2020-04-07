@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccessLibrary.Repos
+namespace DataAccessLibrary.Repos.SQL
 {
     public class SQLMovieLanguageRepository : IMovieLanguageRepository
     {
@@ -19,7 +19,9 @@ namespace DataAccessLibrary.Repos
 
         public async Task<List<int>> GetMovieLanguageIds(int id)
         {
-            return await _context.MovieLanguages.Where(ml => ml.MovieId == id).Select(ml => ml.LanguageId).ToListAsync();
+            return await _context.MovieLanguages.Where(ml => ml.MovieId == id)
+                                                .Select(ml => ml.LanguageId)
+                                                .ToListAsync();
         }
     }
 }

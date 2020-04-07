@@ -1,14 +1,11 @@
 ﻿using DataAccessLibrary.Models;
-using DataAccessLibrary.ViewModels;
-using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DataAccessLibrary.Repos
+namespace DataAccessLibrary.Repos.Interfaces
 {
     public interface IMovieRepository
     {
-
         Task<List<Movie>> GetAllMovies();
 
         Task<Movie> GetMovieDetails(int id);
@@ -20,6 +17,5 @@ namespace DataAccessLibrary.Repos
         Task<List<Movie>> GetTopRatedMovies(int page);
 
         Task<List<Movie>> GetUpcominMovies(int page);
-
     }
 }

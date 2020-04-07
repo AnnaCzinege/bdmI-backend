@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DataAccessLibrary.Repos
+namespace DataAccessLibrary.Repos.Mock
 {
     public class MockMovieGenreRepository
     {
