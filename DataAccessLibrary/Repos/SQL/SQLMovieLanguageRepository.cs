@@ -10,7 +10,6 @@ namespace DataAccessLibrary.Repos.SQL
 {
     public class SQLMovieLanguageRepository : SQLBaseRepository<MovieLanguage>, IMovieLanguageRepository
     {
-
         public SQLMovieLanguageRepository(MovieContext context) : base(context) { }
 
         public async Task<List<int>> GetMovieLanguageIds(int id)

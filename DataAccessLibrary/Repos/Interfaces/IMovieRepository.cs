@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLibrary.Repos.Interfaces
 {
-    public interface IMovieRepository
+    public interface IMovieRepository : IGenericRepository<Movie>
     {
         Task<List<Movie>> GetAllMovies();
 

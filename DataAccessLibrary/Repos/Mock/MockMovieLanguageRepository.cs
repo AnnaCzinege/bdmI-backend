@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLibrary.Repos.Mock
 {
-    class MockMovieLanguageRepository : IMovieLanguageRepository
+    class MockMovieLanguageRepository
     {
         public Task<List<int>> GetMovieLanguageIds(int id)
         {

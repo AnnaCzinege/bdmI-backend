@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLibrary.Repos.Mock
 {
-    public class MockGenreRepository : IGenreRepository
+    public class MockGenreRepository 
     {
         public Task<List<string>> GetGenres(List<int> movieGenreIds)
         {

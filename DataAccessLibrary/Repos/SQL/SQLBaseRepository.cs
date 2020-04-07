@@ -8,19 +8,19 @@ namespace DataAccessLibrary.Repos.SQL
     {
         protected readonly MovieContext _context;
 
-        public SQLBaseRepository()
+        public SQLBaseRepository(MovieContext context)
         {
-
+            _context = context;
         }
 
-        public Task<TEntity> AddAsync(TEntity entity)
+        public async Task AddAsync(TEntity entity)
         {
-            throw new System.NotImplementedException();
+            await _context.Set<TEntity>().AddAsync(entity);
         }
 
-        public Task<TEntity> DeleteAsync(TEntity entity)
+        public async Task DeleteAsync(TEntity entity)
         {
-            throw new System.NotImplementedException();
+             _context.Set<TEntity>().Remove(entity);
         }
     }
 }

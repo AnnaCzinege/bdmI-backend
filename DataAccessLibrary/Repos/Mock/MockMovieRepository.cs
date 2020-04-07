@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLibrary.Repos.Mock
 {
-    public class MockMovieRepository : IMovieRepository
+    public class MockMovieRepository 
     {
         private List<Movie> _movies;
 
@@ -14,7 +14,6 @@ namespace DataAccessLibrary.Repos.Mock
         {
             throw new NotImplementedException();
         }
-
 
         public Task<Movie> GetMovieDetails(int id)
         {
