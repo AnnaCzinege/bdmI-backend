@@ -65,7 +65,7 @@ namespace DataAccessLibrary.Repos.SQL
                                         .ToListAsync();
         }
 
-        public bool IsIdExist(int id)
+        public async Task<bool> IsIdExist(int id)
         {
             return _context.Movies.Any(movie => movie.OriginalId == id);
         }

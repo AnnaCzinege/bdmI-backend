@@ -8,7 +8,7 @@ namespace DataAccessLibrary.Repos.Interfaces
     {
         Task<List<string>> GetGenres(List<int> movieGenreIds);
 
-        bool IsNameExist(string name);
+        Task<bool> IsNameExist(string name);
 
         Task<int> GetIdByName(string name);
     }

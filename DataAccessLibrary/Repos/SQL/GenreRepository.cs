@@ -25,7 +25,7 @@ namespace DataAccessLibrary.Repos.SQL
             return genre.Id;
         }
 
-        public bool IsNameExist(string name)
+        public async Task<bool> IsNameExist(string name)
         {
             return _context.Genres.Any(g => g.Name == name);
         }

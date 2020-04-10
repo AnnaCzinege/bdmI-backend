@@ -63,7 +63,7 @@ namespace ImdbBackend
         {
             foreach (var movieId in movieIds)
             {
-                if (!_unitOfWork.MovieRepository.IsIdExist(movieId))
+                if (!await _unitOfWork.MovieRepository.IsIdExist(movieId))
                 {
                     string dynamicURL = $"https://api.themoviedb.org/3/movie/{movieId}?api_key=bb29364ab81ef62380611d162d85ecdb&language=en-US";
                     try
@@ -113,7 +113,7 @@ namespace ImdbBackend
             {
                 string currentLanguageName = Convert.ToString(language["name"]);
 
-                if (!_unitOfWork.LanguageRepository.IsNameExist(currentLanguageName))
+                if (!await _unitOfWork.LanguageRepository.IsNameExist(currentLanguageName))
                 {
                    await _unitOfWork.LanguageRepository.AddAsync(new Language() { Name = currentLanguageName });
                    await _unitOfWork.SaveAsync();
@@ -128,7 +128,7 @@ namespace ImdbBackend
                 int currentMovieId = await _unitOfWork.MovieRepository.GetIdByOriginalId(Convert.ToInt32(jsonObject["id"]));
                 int currentLanguageId = await _unitOfWork.LanguageRepository.GetIdByName(Convert.ToString(language["name"]));
 
-                if (!_unitOfWork.MovieLanguageRepository.IsPairExist(currentMovieId, currentLanguageId))
+                if (!await _unitOfWork.MovieLanguageRepository.IsPairExist(currentMovieId, currentLanguageId))
                 {
                     await _unitOfWork.MovieLanguageRepository.AddAsync(new MovieLanguage()
                     {
@@ -146,7 +146,7 @@ namespace ImdbBackend
             {
                 string currentGenreName = Convert.ToString(genre["name"]);
 
-                if (!_unitOfWork.GenreRepository.IsNameExist(currentGenreName))
+                if (!await _unitOfWork.GenreRepository.IsNameExist(currentGenreName))
                 {
                     await _unitOfWork.GenreRepository.AddAsync(new Genre() { Name = currentGenreName });
                     await _unitOfWork.SaveAsync();
@@ -161,7 +161,7 @@ namespace ImdbBackend
                 int currentMovieId = await _unitOfWork.MovieRepository.GetIdByOriginalId(Convert.ToInt32(jsonObject["id"]));
                 int currentGenreId = await _unitOfWork.GenreRepository.GetIdByName(Convert.ToString(genre["name"]));
 
-                if (!_unitOfWork.MovieGenreRepository.IsPairExist(currentMovieId, currentGenreId))
+                if (!await _unitOfWork.MovieGenreRepository.IsPairExist(currentMovieId, currentGenreId))
                 {
                     await _unitOfWork.MovieGenreRepository.AddAsync(new MovieGenre() 
                     {
@@ -199,7 +199,7 @@ namespace ImdbBackend
             {
                 if (!movieIds.Any(mId => mId == movieIdFromDb))
                 {
-                    _unitOfWork.MovieRepository.Remove(await _unitOfWork.MovieRepository.GetMovieByOriginalId(movieIdFromDb));
+                    await _unitOfWork.MovieRepository.Remove(await _unitOfWork.MovieRepository.GetMovieByOriginalId(movieIdFromDb));
                     await _unitOfWork.SaveAsync();
                 }
             }
