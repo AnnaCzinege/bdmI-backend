@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DataAccessLibrary.Repos.Interfaces
 {
@@ -8,5 +9,8 @@ namespace DataAccessLibrary.Repos.Interfaces
 
         Task Remove(TEntity entity);
 
+        Task<List<TEntity>> GetAll();
+
+        Task<TEntity> Find(int id);
     }
 }

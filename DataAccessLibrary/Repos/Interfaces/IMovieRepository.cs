@@ -6,10 +6,6 @@ namespace DataAccessLibrary.Repos.Interfaces
 {
     public interface IMovieRepository : IGenericRepository<Movie>
     {
-        Task<List<Movie>> GetAllMovies();
-
-        Task<Movie> GetMovieDetails(int id);
-
         Task<List<Movie>> GetNowPlayingMovies(int page);
 
         Task<List<Movie>> GetPopularMovies(int page);

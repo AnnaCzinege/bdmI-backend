@@ -2,7 +2,6 @@
 using DataAccessLibrary.RepositoryContainer;
 using ImdbBackend.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -51,66 +50,20 @@ namespace ImdbBackend.Controllers
         [HttpGet("moviedetails/{id}")]
         public async Task<ActionResult<MovieDetails>> GetMovieDetails(int id)
         {
-            var movie = await _unitOfWork.MovieRepository.GetMovieDetails(id);
+            Movie movie = await _unitOfWork.MovieRepository.Find(id);
             List<int> movieGenreIds = await _unitOfWork.MovieGenreRepository.GetMovieGenreIds(id);
-            var movieLanguageIds = await _unitOfWork.MovieLanguageRepository.GetMovieLanguageIds(id);
+            List<int> movieLanguageIds = await _unitOfWork.MovieLanguageRepository.GetMovieLanguageIds(id);
             List<string> genres = await _unitOfWork.GenreRepository.GetGenres(movieGenreIds);
             List<string> languages = await _unitOfWork.LanguageRepository.GetLanguages(movieLanguageIds);
-            MovieDetails MovieDetails = ConvertMovieObject(movie, genres, languages);
-            return MovieDetails;
+            return new MovieDetailsConverter().ConvertToMovieDetails(movie, genres, languages);
         }
 
 
         [HttpGet("allmovies")]
         public async Task<ActionResult<List<AllMovies>>> GetAllMovies()
         {
-            var movies = await _unitOfWork.MovieRepository.GetAllMovies();
-            List<AllMovies> allMovies = ConvertMovieObjects(movies);
-            return allMovies;
+            List<Movie>movies = await _unitOfWork.MovieRepository.GetAll();
+            return new AllMoviesConverter().ConvertToAllMovies(movies);
         }
-
-
-        private MovieDetails ConvertMovieObject(Movie movie, List<string> genres, List<string> languages)
-        {
-            MovieDetails movieDetails = new MovieDetails()
-            {
-                Id = movie.Id,
-                OriginalId = movie.OriginalId,
-                OriginalTitle = movie.OriginalTitle,
-                Overview = movie.Overview,
-                MovieGenres = genres,
-                MovieLanguages = languages,
-                ReleaseDate = movie.ReleaseDate,
-                Runtime = movie.Runtime,
-                VoteCount = movie.VoteCount,
-                VoteAverage = movie.VoteAverage,
-                PosterPath = movie.PosterPath
-            };
-            return movieDetails;
-        }
-
-
-        private List<AllMovies> ConvertMovieObjects(List<Movie> movies)
-        {
-            List<AllMovies> allMovies = new List<AllMovies>();
-            string releaseYear = "";
-            foreach (var movie in movies)
-            {
-                string test = movie.ReleaseDate;
-                if (movie.ReleaseDate.Length > 0)
-                {
-                    releaseYear = $"({Convert.ToString(movie.ReleaseDate).Substring(0, 4)})";
-                }
-
-                allMovies.Add(new AllMovies()
-                {
-                    Id = movie.Id,
-                    OriginalId = movie.OriginalId,
-                    OriginalTitle = $"{movie.OriginalTitle} {releaseYear}"
-                });
-            }
-            return allMovies;
-        }
-
     }
 }

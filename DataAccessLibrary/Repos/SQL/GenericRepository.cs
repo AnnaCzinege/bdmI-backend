@@ -1,6 +1,8 @@
 ﻿using DataAccessLibrary.Repos.Interfaces;
 using System.Threading.Tasks;
 using DataAccessLibrary.DataAccess;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLibrary.Repos.SQL
 {
@@ -21,6 +23,16 @@ namespace DataAccessLibrary.Repos.SQL
         public async Task Remove(TEntity entity)
         {
              _context.Set<TEntity>().Remove(entity);
+        }
+
+        public async Task<List<TEntity>> GetAll()
+        {
+            return await _context.Set<TEntity>().ToListAsync();
+        }
+
+        public async Task<TEntity> Find(int id)
+        {
+            return await _context.Set<TEntity>().FindAsync(id);
         }
     }
 }

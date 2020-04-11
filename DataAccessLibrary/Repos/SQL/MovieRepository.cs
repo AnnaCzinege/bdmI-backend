@@ -12,19 +12,8 @@ namespace DataAccessLibrary.Repos.SQL
     public class MovieRepository : GenericRepository<Movie>, IMovieRepository
     {
         private readonly int _moviesPerPage = 20;
-        private int CalculateFirstItemOfPage(int page) { return _moviesPerPage * page - _moviesPerPage; }
-
+        
         public MovieRepository(MovieContext context) : base(context) { }
-
-        public async Task<List<Movie>> GetAllMovies()
-        {
-            return await _context.Movies.ToListAsync();
-        }
-
-        public async Task<Movie> GetMovieDetails(int id)
-        {
-            return await _context.Movies.FindAsync(id);
-        }
 
         public async Task<List<Movie>> GetNowPlayingMovies(int page)
         {
@@ -85,5 +74,7 @@ namespace DataAccessLibrary.Repos.SQL
         {
             return await _context.Movies.FirstAsync(m => m.OriginalId == id);
         }
+
+        private int CalculateFirstItemOfPage(int page) { return _moviesPerPage * page - _moviesPerPage; }
     }
 }
