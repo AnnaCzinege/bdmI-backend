@@ -3,6 +3,7 @@ using DataAccessLibrary.RepositoryContainer;
 using ImdbBackend.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 
@@ -50,11 +51,9 @@ namespace ImdbBackend.Controllers
         [HttpGet("moviedetails/{id}")]
         public async Task<ActionResult<MovieDetails>> GetMovieDetails(int id)
         {
-            Movie movie = await _unitOfWork.MovieRepository.Find(id);
-            List<int> movieGenreIds = await _unitOfWork.MovieGenreRepository.GetMovieGenreIds(id);
-            List<int> movieLanguageIds = await _unitOfWork.MovieLanguageRepository.GetMovieLanguageIds(id);
-            List<string> genres = await _unitOfWork.GenreRepository.GetGenres(movieGenreIds);
-            List<string> languages = await _unitOfWork.LanguageRepository.GetLanguages(movieLanguageIds);
+            Movie movie = await _unitOfWork.MovieRepository.ExtendedFind(id);
+            List<string> genres = await _unitOfWork.GenreRepository.GetGenres(movie.MovieGenres.Select(mg => mg.GenreId).ToList());
+            List<string> languages = await _unitOfWork.LanguageRepository.GetLanguages(movie.MovieLanguages.Select(ml => ml.LanguageId).ToList());
             return new MovieDetailsConverter().ConvertToMovieDetails(movie, genres, languages);
         }
 
@@ -62,7 +61,7 @@ namespace ImdbBackend.Controllers
         [HttpGet("allmovies")]
         public async Task<ActionResult<List<AllMovies>>> GetAllMovies()
         {
-            List<Movie>movies = await _unitOfWork.MovieRepository.GetAll();
+            List<Movie> movies = await _unitOfWork.MovieRepository.GetAll();
             return new AllMoviesConverter().ConvertToAllMovies(movies);
         }
     }

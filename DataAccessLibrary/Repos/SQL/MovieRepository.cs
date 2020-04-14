@@ -76,5 +76,10 @@ namespace DataAccessLibrary.Repos.SQL
         }
 
         private int CalculateFirstItemOfPage(int page) { return _moviesPerPage * page - _moviesPerPage; }
+
+        public async Task<Movie> ExtendedFind(int id)
+        {
+            return await _context.Movies.Include(m => m.MovieGenres).Include(m => m.MovieLanguages).SingleAsync(m => m.Id == id);
+        }
     }
 }

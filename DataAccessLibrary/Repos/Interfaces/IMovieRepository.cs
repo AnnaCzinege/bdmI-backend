@@ -21,5 +21,7 @@ namespace DataAccessLibrary.Repos.Interfaces
         Task<List<int>> GetAllOriginalId();
 
         Task<Movie> GetMovieByOriginalId(int id);
+
+        Task<Movie> ExtendedFind(int id);
     }
 }
