@@ -1,9 +1,10 @@
 ﻿using DataAccessLibrary.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLibrary.DataAccess
 {
-    public class MovieContext : DbContext
+    public class MovieContext : IdentityDbContext
     {
         public MovieContext(DbContextOptions options) : base(options) { }
         public DbSet<Movie> Movies { get; set; }

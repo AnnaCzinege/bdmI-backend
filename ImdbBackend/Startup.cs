@@ -2,6 +2,7 @@ using Autofac;
 using DataAccessLibrary.DataAccess;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,7 +32,9 @@ namespace ImdbBackend
                     builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
                 });
             });
-            services.AddDbContext<MovieContext>(option => { option.UseSqlServer(Configuration.GetConnectionString("Default")); });
+            
+            services.AddDbContextPool<MovieContext>(option => { option.UseSqlServer(Configuration.GetConnectionString("Default")); });
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<MovieContext>();
             services.AddHostedService<UpdateDatabase>();
             services.AddControllers();
         }
@@ -50,6 +53,7 @@ namespace ImdbBackend
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
