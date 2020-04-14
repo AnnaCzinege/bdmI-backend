@@ -17,6 +17,7 @@ namespace DataAccessLibrary.DataAccess
             builder.RegisterType<MovieLanguageRepository>().As<IMovieLanguageRepository>();
             builder.RegisterType<GenreRepository>().As<IGenreRepository>();
             builder.RegisterType<LanguageRepository>().As<ILanguageRepository>();
+            builder.RegisterType<UserRepository>().As<IUserRepository>();
             builder.RegisterType<MovieContext>().AsSelf().As<DbContext>().InstancePerLifetimeScope();
         }
     }

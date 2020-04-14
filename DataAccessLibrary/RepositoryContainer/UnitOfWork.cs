@@ -18,12 +18,15 @@ namespace DataAccessLibrary.RepositoryContainer
 
         public ILanguageRepository LanguageRepository { get; set; }
 
+        public IUserRepository UserRepository { get; set; }
+
         public UnitOfWork(MovieContext context, 
                             IMovieRepository movieRepository,
                             IMovieGenreRepository movieGenreRepository,
                             IMovieLanguageRepository movieLanguageRepository,
                             IGenreRepository genreRepository,
-                            ILanguageRepository languageRepository)
+                            ILanguageRepository languageRepository,
+                            IUserRepository userRepository)
         {
             _context = context;
             MovieRepository = movieRepository;
@@ -31,6 +34,7 @@ namespace DataAccessLibrary.RepositoryContainer
             MovieLanguageRepository = movieLanguageRepository;
             GenreRepository = genreRepository;
             LanguageRepository = languageRepository;
+            UserRepository = userRepository;
         }
 
 

@@ -20,6 +20,7 @@ namespace DataAccessLibrary.DataAccess
 
             modelBuilder.Entity<MovieGenre>().HasKey(mg => new { mg.MovieId, mg.GenreId });
             modelBuilder.Entity<MovieLanguage>().HasKey(ml => new { ml.MovieId, ml.LanguageId });
+            modelBuilder.Entity<WatchlistItem>().HasKey(w => new { w.MovieId, w.UserId });
         }
     }
 }

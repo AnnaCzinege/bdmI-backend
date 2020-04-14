@@ -10,7 +10,7 @@ namespace DataAccessLibrary.RepositoryContainer
         IMovieLanguageRepository MovieLanguageRepository { get; }
         IGenreRepository GenreRepository { get; }
         ILanguageRepository LanguageRepository { get; }
-
+        IUserRepository UserRepository { get; }
         Task SaveAsync();
     }
 }

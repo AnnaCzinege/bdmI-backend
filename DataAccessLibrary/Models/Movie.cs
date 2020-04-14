@@ -16,6 +16,7 @@ namespace DataAccessLibrary.Models
         public string Overview { get; set; }
         public IList<MovieGenre> MovieGenres { get; set; }
         public IList<MovieLanguage> MovieLanguages { get; set; }
+        public IList<WatchlistItem> Watchlist { get; set; }
         [Required]
         [MaxLength(200)]
         public string ReleaseDate { get; set; }
