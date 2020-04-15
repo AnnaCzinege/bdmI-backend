@@ -1,5 +1,6 @@
 using Autofac;
 using DataAccessLibrary.DataAccess;
+using DataAccessLibrary.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -34,7 +35,22 @@ namespace ImdbBackend
             });
             
             services.AddDbContextPool<MovieContext>(option => { option.UseSqlServer(Configuration.GetConnectionString("Default")); });
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<MovieContext>();
+            services.AddIdentity<User, IdentityRole>(opt =>
+            {
+                opt.User.RequireUniqueEmail = true;
+                opt.SignIn.RequireConfirmedEmail = true;
+            })
+                .AddEntityFrameworkStores<MovieContext>()
+                .AddDefaultTokenProviders();
+
+            services.Configure<IdentityOptions>(config =>
+            {
+                config.Password.RequiredLength = 6;
+                config.Password.RequireDigit = true;
+                config.Password.RequireNonAlphanumeric = true;
+                config.Password.RequireLowercase = true;
+                config.Password.RequireUppercase = true;
+            });
             services.AddHostedService<UpdateDatabase>();
             services.AddControllers();
         }
