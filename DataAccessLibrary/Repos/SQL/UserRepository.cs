@@ -49,5 +49,21 @@ namespace DataAccessLibrary.Repos.SQL
             }
             return null;
         }
+        public async Task<User> GetUser(string email)
+        {
+            return await _userManager.FindByEmailAsync(email);
+        }
+
+        public async Task UpdateSecurityStamp(User user)
+        {
+            await _userManager.UpdateSecurityStampAsync(user);
+        }
+
+        public async Task SignOut()
+        {
+            await _signInManager.SignOutAsync();
+        }
+
+
     }
 }

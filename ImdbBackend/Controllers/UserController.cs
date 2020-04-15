@@ -45,5 +45,22 @@ namespace ImdbBackend.Controllers
             }
             return BadRequest(new { error = "User name or password is invalid!" });
         }
+
+        [HttpPost]
+        public async Task<ActionResult<string>> Logout([FromBody] UserDTO user)
+        {
+            if (this.ModelState.IsValid)
+            {
+                User userToLogOut = await _unitOfWork.UserRepository.GetUser(user.Email);
+
+                await _unitOfWork.UserRepository.UpdateSecurityStamp(userToLogOut);
+
+                await _unitOfWork.UserRepository.SignOut();
+                return "You have been logged out";
+            }
+
+            return BadRequest("Unsuccesul logout");
+        }
+
     }
 }
