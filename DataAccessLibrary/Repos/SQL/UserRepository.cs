@@ -10,6 +10,7 @@ namespace DataAccessLibrary.Repos.SQL
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+
         public UserRepository(MovieContext context, UserManager<User> userManager, SignInManager<User> signInManager) : base(context)
         {
             _userManager = userManager;
@@ -36,6 +37,17 @@ namespace DataAccessLibrary.Repos.SQL
                 string token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
                 await _userManager.ConfirmEmailAsync(newUser, token);
             }
+        }
+
+        public async Task<User> SignInUser(string userName, string password)
+        {
+            User loginUser = await _userManager.FindByNameAsync(userName);
+            SignInResult result = await _signInManager.PasswordSignInAsync(userName, password, false, false);
+            if (result.Succeeded)
+            {
+                return loginUser;
+            }
+            return null;
         }
     }
 }
