@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.RepositoryContainer;
-using ImdbBackend.ApiModels;
+using ImdbBackend.ViewModels;
 using ImdbBackend.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -24,7 +24,7 @@ namespace ImdbBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<string>> Register([FromBody]UserRegister model)
+        public async Task<ActionResult<string>> Register([FromBody]UserAuthentication model)
         {
             if (!await _unitOfWork.UserRepository.DoesUserExist(model.Email))
             {

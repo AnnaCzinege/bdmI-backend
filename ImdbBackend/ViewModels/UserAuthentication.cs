@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ImdbBackend.ApiModels
+namespace ImdbBackend.ViewModels
 {
-    public class UserRegister
+    public class UserAuthentication
     {
         public string UserName { get; set; }
         public string Email { get; set; }
