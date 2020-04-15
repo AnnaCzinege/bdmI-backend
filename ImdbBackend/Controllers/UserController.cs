@@ -31,7 +31,7 @@ namespace ImdbBackend.Controllers
                 await _unitOfWork.UserRepository.CreateNewUser(userModel.UserName, userModel.Email, userModel.Password);
                 return "Registration was successful";
             }
-            return BadRequest(new {error = "User already exists." });
+            return BadRequest(new {error = "User already exists!" });
         }
 
         [HttpPost]
@@ -43,7 +43,7 @@ namespace ImdbBackend.Controllers
             {
                 return userDTOConverter.ConvertUserObject(user);
             }
-            return BadRequest(new { error = "User name or password is invalid!" });
+            return BadRequest(new { error = "Username or password is invalid!" });
         }
 
         [HttpPost]
@@ -59,7 +59,7 @@ namespace ImdbBackend.Controllers
                 return "You have been logged out";
             }
 
-            return BadRequest("Unsuccesul logout");
+            return BadRequest("Unsuccesful logout");
         }
 
     }
