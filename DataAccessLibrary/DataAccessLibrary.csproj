@@ -25,6 +25,10 @@
     <Compile Remove="Migrations\20200331094132_ok.Designer.cs" />
     <Compile Remove="Migrations\20200331100607_init.cs" />
     <Compile Remove="Migrations\20200331100607_init.Designer.cs" />
+    <Compile Remove="Migrations\20200415153848_intToString.cs" />
+    <Compile Remove="Migrations\20200415153848_intToString.Designer.cs" />
+    <Compile Remove="Migrations\20200415154804_intToString.cs" />
+    <Compile Remove="Migrations\20200415154804_intToString.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
