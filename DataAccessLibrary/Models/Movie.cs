@@ -1,24 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace DataAccessLibrary.Models
 {
     public class Movie
     {
+
         public int Id { get; set; }
         [Required]
-        public int MovieId { get; set; }
+        public int OriginalId { get; set; }
         [Required]
         [MaxLength(200)]
         public string OriginalTitle { get; set; }
         [Required]
         public string Overview { get; set; }
-        [Required]
-        public List<Genre> Genres { get; set; }
-        [Required]
-        public List<Language> SpokenLanguages { get; set; }
+        public IList<MovieGenre> MovieGenres { get; set; }
+        public IList<MovieLanguage> MovieLanguages { get; set; }
+        public IList<WatchlistItem> Watchlist { get; set; }
         [Required]
         [MaxLength(200)]
         public string ReleaseDate { get; set; }
