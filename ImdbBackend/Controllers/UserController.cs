@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ImdbBackend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -32,6 +32,23 @@ namespace ImdbBackend.Controllers
                 return "Registration was successful";
             }
             return BadRequest("User already exists");
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult<string>> Logout([FromBody] UserDTO user)
+        {
+            if (this.ModelState.IsValid)
+            {
+                var userToLogOut = await _unitOfWork.UserRepository.GetUser(user.Email);
+
+                await _unitOfWork.UserRepository.UpdateSecurityStamp(userToLogOut);
+
+                await _unitOfWork.UserRepository.SignOut();
+                return "You have been logged out";
+            }
+
+            return BadRequest("Unsuccesul logout");
         }
 
     }
