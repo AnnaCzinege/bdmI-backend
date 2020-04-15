@@ -12,6 +12,8 @@ namespace DataAccessLibrary.DataAccess
         public DbSet<Language> Languages { get; set; }
         public DbSet<MovieLanguage> MovieLanguages { get; set; }
         public DbSet<MovieGenre> MovieGenres { get; set; }
+        public DbSet<User> User { get; set; }
+        public DbSet<WatchlistItem> WatchlistItems { get; set; } //MARKED
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
