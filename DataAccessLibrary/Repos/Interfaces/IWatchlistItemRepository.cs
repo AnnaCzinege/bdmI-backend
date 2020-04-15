@@ -8,5 +8,10 @@ namespace DataAccessLibrary.Repos.Interfaces
 {
     public interface IWatchlistItemRepository : IGenericRepository<WatchlistItem>
     {
+        Task<List<int>> GetWatchListByUser(string id);
+
+        Task AddWatchListItem(string userId, int movieId);
+
+        Task DeleteWatchListItem(string userId, int movieId);
     }
 }

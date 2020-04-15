@@ -62,5 +62,43 @@ namespace ImdbBackend.Controllers
             return BadRequest("Unsuccesful logout");
         }
 
+        [HttpGet]
+        public async Task<ActionResult<List<int>>> GetWatchList([FromBody] UserDTO user)
+        {
+            if (ModelState.IsValid)
+            {
+                
+                return await _unitOfWork.WatchlistItemRepository.GetWatchListByUser(user.Id);
+            }
+
+            return BadRequest("Unsuccesful get request of watchlist");
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<string>> AddToWatchList([FromBody] WatchlistDTO watchlistDto)
+        {
+            if (ModelState.IsValid)
+            {
+
+                await _unitOfWork.WatchlistItemRepository.AddWatchListItem(watchlistDto.UserId, watchlistDto.MovieId);
+                return "Watchlist item succesully added";
+            }
+
+            return BadRequest("Unsuccesful post request of adding item to watchlist");
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult<string>> DeleteFromWatchList([FromBody] WatchlistDTO watchlistDto)
+        {
+            if (ModelState.IsValid)
+            {
+
+                await _unitOfWork.WatchlistItemRepository.DeleteWatchListItem(watchlistDto.UserId, watchlistDto.MovieId);
+                return "Watchlist item succesully deleted";
+            }
+
+            return BadRequest("Unsuccesful delete request of adding item to watchlist");
+        }
+
     }
 }
