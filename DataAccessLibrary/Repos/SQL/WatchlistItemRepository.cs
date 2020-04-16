@@ -14,11 +14,10 @@ namespace DataAccessLibrary.Repos.SQL
     {
         public WatchlistItemRepository(MovieContext context) : base(context) { }
 
-        public async Task<List<int>> GetWatchListByUser(string id)
+        public async Task<List<Movie>> GetWatchListOfUser(string id)
         {
-            return await _context.WatchlistItems.Where(wl => wl.UserId == id)
-                                             .Select(wl => wl.MovieId)
-                                             .ToListAsync();
+            var movieIds = await _context.WatchlistItems.Where(wl => wl.UserId == id).Select(wl => wl.MovieId).ToListAsync();
+            return await _context.Movies.Where(m => movieIds.Contains(m.Id)).ToListAsync();
         }
 
         public async Task AddWatchListItem(string userId, int movieId)
