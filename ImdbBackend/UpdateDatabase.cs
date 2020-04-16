@@ -61,9 +61,11 @@ namespace ImdbBackend
 
         private async Task Update(List<int> movieIds)
         {
+            List<int> movieIdsFromDb = await _unitOfWork.MovieRepository.GetAllOriginalId();
+
             foreach (var movieId in movieIds)
             {
-                if (!await _unitOfWork.MovieRepository.IsIdExist(movieId))
+                if (!movieIdsFromDb.Contains(movieId))
                 {
                     string dynamicURL = $"https://api.themoviedb.org/3/movie/{movieId}?api_key=bb29364ab81ef62380611d162d85ecdb&language=en-US";
                     try

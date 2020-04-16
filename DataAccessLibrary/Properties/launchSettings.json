@@ -3,8 +3,10 @@
     "DataAccessLibrary": {
       "commandName": "Project",
       "environmentVariables": {
-        "SECRET_KEY": "secretkeyforgeneratingjwttokenusingsymmetricsecuritykey"
-      }
+        "\"SECRET_KEY\"": "\"secretkeyforgeneratingjwttokenusingsymmetricsecuritykey\""
+      },
+      "sqlDebugging": true,
+      "nativeDebugging": true
     }
   }
 }
