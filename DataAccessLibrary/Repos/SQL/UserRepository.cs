@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -69,6 +70,14 @@ namespace DataAccessLibrary.Repos.SQL
         public async Task SignOut()
         {
             await _signInManager.SignOutAsync();
+        }
+
+        public async Task<User> GetCurrentUser(string token)
+        {
+            JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
+            JwtSecurityToken result = jwtHandler.ReadToken(token) as JwtSecurityToken;
+            string Id = result.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+            return await _userManager.FindByIdAsync(Id);
         }
 
         public string GenerateTokenForUser(string id, string userName, string email)
