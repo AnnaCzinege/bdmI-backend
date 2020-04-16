@@ -23,18 +23,22 @@ namespace DataAccessLibrary.Repos.SQL
 
         public async Task AddWatchListItem(string userId, int movieId)
         {
-   
-            await _context.WatchlistItems.AddAsync(new WatchlistItem
+            var watchlist = _context.WatchlistItems.Where(wl => wl.MovieId == movieId && wl.UserId == userId);
+
+            if (watchlist.Count() == 0)
             {
-                UserId = userId,
-                MovieId = movieId
-            });
-            await _context.SaveChangesAsync();
+                await _context.WatchlistItems.AddAsync(new WatchlistItem
+                {
+                    UserId = userId,
+                    MovieId = movieId
+                });
+                await _context.SaveChangesAsync();  
+            }
         }
 
         public async Task DeleteWatchListItem(string userId, int movieId)
         {
-            WatchlistItem itemToDelete = (WatchlistItem)_context.WatchlistItems.Where(wl => wl.MovieId == movieId && wl.UserId == userId);
+            WatchlistItem itemToDelete = _context.WatchlistItems.Single(wl => wl.MovieId == movieId && wl.UserId == userId);
 
             _context.WatchlistItems.Remove(itemToDelete);
 

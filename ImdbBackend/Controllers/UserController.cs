@@ -97,7 +97,7 @@ namespace ImdbBackend.Controllers
                 return "Watchlist item succesully deleted";
             }
 
-            return BadRequest("Unsuccesful delete request of adding item to watchlist");
+            return BadRequest("Unsuccesful delete request of deleting item to watchlist");
         }
 
     }
