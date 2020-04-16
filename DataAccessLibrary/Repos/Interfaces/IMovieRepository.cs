@@ -14,8 +14,6 @@ namespace DataAccessLibrary.Repos.Interfaces
 
         Task<List<Movie>> GetUpcomingMovies(int page);
 
-        Task<bool> IsIdExist(int id);
-
         Task<int> GetIdByOriginalId(int id);
 
         Task<List<int>> GetAllOriginalId();

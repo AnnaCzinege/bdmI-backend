@@ -17,7 +17,7 @@ namespace DataAccessLibrary.Repos.SQL
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         //private static readonly string SECRET_KEY = Environment.GetEnvironmentVariable("SECRET_KEY");
-        private static readonly SymmetricSecurityKey SIGN_IN_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secretkeyforgeneratingjwttokenusingsymmetricsecuritykey"));
+        public static readonly SymmetricSecurityKey SIGN_IN_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secretkeyforgeneratingjwttokenusingsymmetricsecuritykey"));
 
         public UserRepository(MovieContext context, UserManager<User> userManager, SignInManager<User> signInManager) : base(context)
         {
@@ -74,10 +74,21 @@ namespace DataAccessLibrary.Repos.SQL
 
         public async Task<User> GetCurrentUser(string token)
         {
-            JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
-            JwtSecurityToken result = jwtHandler.ReadToken(token) as JwtSecurityToken;
-            string Id = result.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
-            return await _userManager.FindByIdAsync(Id);
+            try
+            {
+                JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
+                JwtSecurityToken result = jwtHandler.ReadToken(token) as JwtSecurityToken;
+                string Id = result.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+                return await _userManager.FindByIdAsync(Id);
+            }
+            catch (Exception ex)
+            {
+                if (ex is ArgumentNullException || ex is ArgumentException)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            return null;
         }
 
         public string GenerateTokenForUser(string id, string userName, string email)

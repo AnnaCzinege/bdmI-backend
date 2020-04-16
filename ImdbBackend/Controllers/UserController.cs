@@ -46,7 +46,7 @@ namespace ImdbBackend.Controllers
                 userDTO.Token = token;
                 return userDTO;
             }
-            return BadRequest(new { error = "Username or password is invalid!" });
+            return BadRequest("Username or password is invalid!");
         }
 
         [HttpPost]
@@ -70,10 +70,12 @@ namespace ImdbBackend.Controllers
         {
             if (ModelState.IsValid)
             {
-                
-                return await _unitOfWork.WatchlistItemRepository.GetWatchListOfUser(user.Id);
+                User currentUser = await _unitOfWork.UserRepository.GetCurrentUser(user.Token);
+                if (currentUser != null)
+                {
+                    return await _unitOfWork.WatchlistItemRepository.GetWatchListOfUser(currentUser.Id);
+                }
             }
-
             return BadRequest("Unsuccesful get request of watchlist");
         }
 
@@ -82,15 +84,17 @@ namespace ImdbBackend.Controllers
         {
             if (ModelState.IsValid)
             {
-
-                await _unitOfWork.WatchlistItemRepository.AddWatchListItem(watchlistDto.UserId, watchlistDto.MovieId);
-                return "Watchlist item succesully added";
+                User currentUser = await _unitOfWork.UserRepository.GetCurrentUser(watchlistDto.Token);
+                if (currentUser != null)
+                {
+                    await _unitOfWork.WatchlistItemRepository.AddWatchListItem(watchlistDto.UserId, watchlistDto.MovieId);
+                    return "Movie succesully added to watchlist!";
+                }
             }
-
-            return BadRequest("Unsuccesful post request of adding item to watchlist");
+            return "Failed to add movie to watchlist!";
         }
 
-        [HttpDelete]
+        [HttpPost]
         public async Task<ActionResult<string>> DeleteFromWatchList([FromBody] WatchlistDTO watchlistDto)
         {
             if (ModelState.IsValid)
@@ -100,7 +104,7 @@ namespace ImdbBackend.Controllers
                 return "Watchlist item succesully deleted";
             }
 
-            return BadRequest("Unsuccesful delete request of deleting item to watchlist");
+            return "Unsuccesful delete request of deleting item to watchlist";
         }
 
         [HttpPost]
