@@ -8,6 +8,6 @@ namespace DataAccessLibrary.Repos.Interfaces
     {
         Task<List<int>> GetMovieGenreIds(int id);
 
-        Task<bool> IsPairExist(int movieId, int genreId);
+        Task<bool> DoesPairExist(int movieId, int genreId);
     }
 }

@@ -25,9 +25,9 @@ namespace DataAccessLibrary.Repos.SQL
                                             .ToListAsync();
         }
 
-        public async Task<bool> IsNameExist(string name)
+        public async Task<List<string>> GetAllName()
         {
-            return _context.Languages.Any(l => l.Name == name);
+            return await _context.Languages.Select(l => l.Name).ToListAsync();
         }
     }
 }
