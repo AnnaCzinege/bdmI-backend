@@ -2,6 +2,11 @@
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repos.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace DataAccessLibrary.Repos.SQL
@@ -10,6 +15,8 @@ namespace DataAccessLibrary.Repos.SQL
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private static readonly string SECRET_KEY = Environment.GetEnvironmentVariable("SECRET_KEY");
+        private static readonly SymmetricSecurityKey SIGN_IN_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECRET_KEY));
 
         public UserRepository(MovieContext context, UserManager<User> userManager, SignInManager<User> signInManager) : base(context)
         {
@@ -27,7 +34,7 @@ namespace DataAccessLibrary.Repos.SQL
         {
             User newUser = new User
             {
-                UserName = email,
+                UserName = userName,
                 Email = email
             };
 
@@ -64,6 +71,21 @@ namespace DataAccessLibrary.Repos.SQL
             await _signInManager.SignOutAsync();
         }
 
+        public string GenerateTokenForUser(string id, string userName, string email)
+        {
+            JwtSecurityToken jwtToken = new JwtSecurityToken(
+                claims: new Claim[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, id),
+                    new Claim(ClaimTypes.Name, userName),
+                    new Claim(ClaimTypes.Email, email)
+                },
+                notBefore: new DateTimeOffset(DateTime.Now).DateTime,
+                expires: new DateTimeOffset(DateTime.Now.AddDays(1)).DateTime,
+                signingCredentials: new SigningCredentials(SIGN_IN_KEY, SecurityAlgorithms.HmacSha256)
+                );
+            return new JwtSecurityTokenHandler().WriteToken(jwtToken);
+        }
 
     }
 }

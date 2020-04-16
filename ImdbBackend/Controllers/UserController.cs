@@ -41,7 +41,10 @@ namespace ImdbBackend.Controllers
             User user = await _unitOfWork.UserRepository.SignInUser(userModel.UserName, userModel.Password);
             if (user != null)
             {
-                return userDTOConverter.ConvertUserObject(user);
+                UserDTO userDTO = userDTOConverter.ConvertUserObject(user);
+                string token = _unitOfWork.UserRepository.GenerateTokenForUser(userDTO.Id, userDTO.UserName, userDTO.Email);
+                userDTO.Token = token;
+                return userDTO;
             }
             return BadRequest(new { error = "Username or password is invalid!" });
         }
