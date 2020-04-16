@@ -17,6 +17,7 @@ namespace ImdbBackend.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly UserDTOConverter _userDTOConverter = new UserDTOConverter();
 
         public UserController(IUnitOfWork unitOfWork)
         {
@@ -37,11 +38,13 @@ namespace ImdbBackend.Controllers
         [HttpPost]
         public async Task<ActionResult<UserDTO>> Login([FromBody] UserAuthentication userModel)
         {
-            UserDTOConverter userDTOConverter = new UserDTOConverter();
             User user = await _unitOfWork.UserRepository.SignInUser(userModel.UserName, userModel.Password);
             if (user != null)
             {
-                return userDTOConverter.ConvertUserObject(user);
+                UserDTO userDTO = _userDTOConverter.ConvertUserObject(user);
+                string token = _unitOfWork.UserRepository.GenerateTokenForUser(userDTO.Id, userDTO.UserName, userDTO.Email);
+                userDTO.Token = token;
+                return userDTO;
             }
             return BadRequest(new { error = "Username or password is invalid!" });
         }
@@ -49,7 +52,7 @@ namespace ImdbBackend.Controllers
         [HttpPost]
         public async Task<ActionResult<string>> Logout([FromBody] UserDTO user)
         {
-            if (this.ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 User userToLogOut = await _unitOfWork.UserRepository.GetUser(user.Email);
 
@@ -98,6 +101,15 @@ namespace ImdbBackend.Controllers
             }
 
             return BadRequest("Unsuccesful delete request of deleting item to watchlist");
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<UserDTO>> GetCurrentUser([FromHeader] string jwtToken)
+        {
+            User currentUser = await _unitOfWork.UserRepository.GetCurrentUser(jwtToken);
+            UserDTO currentUserDTO = _userDTOConverter.ConvertUserObject(currentUser);
+            currentUserDTO.Token = jwtToken;
+            return currentUserDTO;
         }
 
     }

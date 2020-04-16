@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "DataAccessLibrary": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "SECRET_KEY": "secretkeyforgeneratingjwttokenusingsymmetricsecuritykey"
+      }
+    }
+  }
+}

@@ -11,5 +11,7 @@ namespace DataAccessLibrary.Repos.Interfaces
         Task<User> GetUser(string email);
         Task UpdateSecurityStamp(User user);
         Task SignOut();
+        Task<User> GetCurrentUser(string token);
+        string GenerateTokenForUser(string id, string userName, string email);
     }
 }
