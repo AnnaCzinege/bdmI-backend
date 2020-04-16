@@ -62,13 +62,13 @@ namespace ImdbBackend.Controllers
             return BadRequest("Unsuccesful logout");
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<int>>> GetWatchList([FromBody] UserDTO user)
+        [HttpPost]
+        public async Task<ActionResult<List<Movie>>> GetWatchList([FromBody] UserDTO user)
         {
             if (ModelState.IsValid)
             {
                 
-                return await _unitOfWork.WatchlistItemRepository.GetWatchListByUser(user.Id);
+                return await _unitOfWork.WatchlistItemRepository.GetWatchListOfUser(user.Id);
             }
 
             return BadRequest("Unsuccesful get request of watchlist");
