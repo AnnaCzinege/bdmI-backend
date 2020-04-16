@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImdbBackend", "ImdbBackend.csproj", "{9F43E58A-04F2-42C5-8FB2-F4C37D72C917}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessLibrary", "..\DataAccessLibrary\DataAccessLibrary.csproj", "{EE69C27E-8BED-4ADE-8284-EF2DE60D4341}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessLibrary", "..\DataAccessLibrary\DataAccessLibrary.csproj", "{EE69C27E-8BED-4ADE-8284-EF2DE60D4341}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImdbBackEnd.Tests", "..\ImdbBackEnd.Tests\ImdbBackEnd.Tests.csproj", "{536513D6-4F22-4395-B500-723EE62F1E7D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{EE69C27E-8BED-4ADE-8284-EF2DE60D4341}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE69C27E-8BED-4ADE-8284-EF2DE60D4341}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE69C27E-8BED-4ADE-8284-EF2DE60D4341}.Release|Any CPU.Build.0 = Release|Any CPU
+		{536513D6-4F22-4395-B500-723EE62F1E7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{536513D6-4F22-4395-B500-723EE62F1E7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{536513D6-4F22-4395-B500-723EE62F1E7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{536513D6-4F22-4395-B500-723EE62F1E7D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
