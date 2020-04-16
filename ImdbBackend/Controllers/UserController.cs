@@ -29,10 +29,9 @@ namespace ImdbBackend.Controllers
         {
             if (!await _unitOfWork.UserRepository.DoesUserExist(userModel.Email))
             {
-                await _unitOfWork.UserRepository.CreateNewUser(userModel.UserName, userModel.Email, userModel.Password);
-                return "Registration was successful";
+                return await _unitOfWork.UserRepository.CreateNewUser(userModel.UserName, userModel.Email, userModel.Password);
             }
-            return BadRequest(new {error = "User already exists!" });
+            return "Registration was unsuccessfull";
         }
 
         [HttpPost]
@@ -46,7 +45,7 @@ namespace ImdbBackend.Controllers
                 userDTO.Token = token;
                 return userDTO;
             }
-            return BadRequest("Username or password is invalid!");
+            return new UserDTO() { ErrorMessage = "Username or password was invalid"};
         }
 
         [HttpPost]

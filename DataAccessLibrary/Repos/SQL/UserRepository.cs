@@ -31,20 +31,28 @@ namespace DataAccessLibrary.Repos.SQL
             return user == null ? false : true;
         }
 
-        public async Task CreateNewUser(string userName, string email, string password )
+        public async Task<string> CreateNewUser(string userName, string email, string password )
         {
-            User newUser = new User
+            try
             {
-                UserName = userName,
-                Email = email
-            };
+                User newUser = new User
+                {
+                    UserName = userName,
+                    Email = email
+                };
 
-            IdentityResult result = await _userManager.CreateAsync(newUser, password);
-            if (result.Succeeded)
-            {
-                string token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
-                await _userManager.ConfirmEmailAsync(newUser, token);
+                IdentityResult result = await _userManager.CreateAsync(newUser, password);
+                if (result.Succeeded)
+                {
+                    string token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
+                    await _userManager.ConfirmEmailAsync(newUser, token);
+                    return "Registration was successfull";
+                }
             }
+            catch (Exception)
+            {
+            }
+            return "Registration was unsuccessfull";
         }
 
         public async Task<User> SignInUser(string userName, string password)
