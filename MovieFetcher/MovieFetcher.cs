@@ -9,14 +9,14 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ImdbBackend
+namespace MovieFetcher
 {
-    public class UpdateDatabase : BackgroundService
+    public class MovieFetcher : BackgroundService
     {
         private readonly IUnitOfWork _unitOfWork;
         private int _fetchCounter = 0;
 
-        public UpdateDatabase(IUnitOfWork unitOfWork)
+        public MovieFetcher(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
@@ -119,8 +119,8 @@ namespace ImdbBackend
 
                 if (!languageNamesFromDb.Contains(currentLanguageName))
                 {
-                   await _unitOfWork.LanguageRepository.AddAsync(new Language() { Name = currentLanguageName });
-                   await _unitOfWork.SaveAsync();
+                    await _unitOfWork.LanguageRepository.AddAsync(new Language() { Name = currentLanguageName });
+                    await _unitOfWork.SaveAsync();
                 }
             }
         }
@@ -169,14 +169,14 @@ namespace ImdbBackend
 
                 if (!await _unitOfWork.MovieGenreRepository.DoesPairExist(currentMovieId, currentGenreId))
                 {
-                    await _unitOfWork.MovieGenreRepository.AddAsync(new MovieGenre() 
+                    await _unitOfWork.MovieGenreRepository.AddAsync(new MovieGenre()
                     {
                         GenreId = currentGenreId,
                         MovieId = currentMovieId
                     });
                     await _unitOfWork.SaveAsync();
                 }
-               
+
             }
         }
 
