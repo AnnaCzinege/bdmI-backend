@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.RepositoryContainer;
 using ImdbBackend.ViewModels;
 using ImdbBackend.DTOs;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ImdbBackend.Controllers
@@ -114,6 +110,5 @@ namespace ImdbBackend.Controllers
             currentUserDTO.Token = jwtToken;
             return currentUserDTO;
         }
-
     }
 }

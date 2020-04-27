@@ -1,10 +1,4 @@
-﻿using DataAccessLibrary.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace ImdbBackend.ViewModels
+﻿namespace ImdbBackend.ViewModels
 {
     public class UserAuthentication
     {

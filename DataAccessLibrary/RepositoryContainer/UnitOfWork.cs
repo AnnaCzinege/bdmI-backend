@@ -39,9 +39,7 @@ namespace DataAccessLibrary.RepositoryContainer
             LanguageRepository = languageRepository;
             UserRepository = userRepository;
             WatchlistItemRepository = watchlistItemRepository;
-
         }
-
 
         public async Task SaveAsync()
         {
