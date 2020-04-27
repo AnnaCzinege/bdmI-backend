@@ -61,6 +61,7 @@ namespace ImdbBackend
                 .Get<EmailConfigurationModel>();
             emailConfig.Password = "Fake_Imdb_3@";//Environment.GetEnvironmentVariable("EMAIL_PASSWORD");
             services.AddSingleton(emailConfig);
+            services.AddScoped<IEmailConfirmationSender, EmailConfirmationSender>();
 
             services.AddDbContextPool<MovieContext>(option => { option.UseSqlServer(Configuration.GetConnectionString("Default")); });
             services.AddIdentity<User, IdentityRole>(opt =>

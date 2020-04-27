@@ -25,7 +25,7 @@ namespace ImdbBackend.Controllers
         {
             if (!await _unitOfWork.UserRepository.DoesUserExist(userModel.Email))
             {
-                return await _unitOfWork.UserRepository.CreateNewUser(userModel.UserName, userModel.Email, userModel.Password, Url, Request);
+                return await _unitOfWork.UserRepository.CreateNewUser(userModel.UserName, userModel.Email, userModel.Password, Url, Request.Scheme);
             }
             return "Registration was unsuccessfull";
         }
@@ -35,7 +35,7 @@ namespace ImdbBackend.Controllers
         {
             if (await _unitOfWork.UserRepository.ConfirmEmail(userEmail, token) != null)
             {
-                return Redirect("https://localhost:3000");
+                return Redirect("http://localhost:3000");
             }
 
             return BadRequest();

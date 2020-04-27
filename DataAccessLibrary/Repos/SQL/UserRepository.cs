@@ -20,14 +20,15 @@ namespace DataAccessLibrary.Repos.SQL
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly EmailConfirmationSender _emailConfirmationSender;
+        private readonly IEmailConfirmationSender _emailConfirmationSender;
         //private static readonly string SECRET_KEY = Environment.GetEnvironmentVariable("SECRET_KEY");
         public static readonly SymmetricSecurityKey SIGN_IN_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secretkeyforgeneratingjwttokenusingsymmetricsecuritykey"));
 
-        public UserRepository(MovieContext context, UserManager<User> userManager, SignInManager<User> signInManager) : base(context)
+        public UserRepository(MovieContext context, UserManager<User> userManager, SignInManager<User> signInManager, IEmailConfirmationSender emailConfirmationSender) : base(context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailConfirmationSender = emailConfirmationSender;
         }
 
         public async Task<bool> DoesUserExist(string userEmail)
@@ -36,7 +37,7 @@ namespace DataAccessLibrary.Repos.SQL
             return user == null ? false : true;
         }
 
-        public async Task<string> CreateNewUser(string userName, string email, string password, IUrlHelper url, HttpRequest request)
+        public async Task<string> CreateNewUser(string userName, string email, string password, IUrlHelper url, string scheme)
         {
             try
             {
@@ -52,7 +53,7 @@ namespace DataAccessLibrary.Repos.SQL
                     string token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
                     
                     string confirmationLink =
-                            url.Action("ConfirmEmail", "Account", new { userEmail = newUser.Email, token = token }, request.Scheme);
+                            url.Action("ConfirmEmail", "User", new { userEmail = newUser.Email, token }, scheme);
 
                     string emailContent = _emailConfirmationSender.CreateEmailContent(newUser.UserName, confirmationLink);
                     Message message = new Message(new string[] { newUser.Email }, "Confirmation letter - bdmI", emailContent);
@@ -63,8 +64,9 @@ namespace DataAccessLibrary.Repos.SQL
                     return "Registration was successfull";
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
             }
             return "Registration was unsuccessfull";
         }
