@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataAccessLibrary\DataAccessLibrary.csproj" />
+    <ProjectReference Include="..\EmailConfirmationService\EmailConfirmationService.csproj" />
   </ItemGroup>
 
 

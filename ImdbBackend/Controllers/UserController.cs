@@ -25,10 +25,22 @@ namespace ImdbBackend.Controllers
         {
             if (!await _unitOfWork.UserRepository.DoesUserExist(userModel.Email))
             {
-                return await _unitOfWork.UserRepository.CreateNewUser(userModel.UserName, userModel.Email, userModel.Password);
+                return await _unitOfWork.UserRepository.CreateNewUser(userModel.UserName, userModel.Email, userModel.Password, Url, Request);
             }
             return "Registration was unsuccessfull";
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string userEmail, string token)
+        {
+            if (await _unitOfWork.UserRepository.ConfirmEmail(userEmail, token) != null)
+            {
+                return Redirect("https://localhost:3000");
+            }
+
+            return BadRequest();
+        }
+
 
         [HttpPost]
         public async Task<ActionResult<UserDTO>> Login([FromBody] UserAuthentication userModel)

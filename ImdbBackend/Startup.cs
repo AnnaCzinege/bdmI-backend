@@ -2,6 +2,7 @@ using Autofac;
 using DataAccessLibrary.DataAccess;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repos.SQL;
+using EmailConfirmationService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -54,7 +55,13 @@ namespace ImdbBackend
                     builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
                 });
             });
-            
+
+            EmailConfigurationModel emailConfig = Configuration
+                .GetSection("EmailConfiguration")
+                .Get<EmailConfigurationModel>();
+            emailConfig.Password = "Fake_Imdb_3@";//Environment.GetEnvironmentVariable("EMAIL_PASSWORD");
+            services.AddSingleton(emailConfig);
+
             services.AddDbContextPool<MovieContext>(option => { option.UseSqlServer(Configuration.GetConnectionString("Default")); });
             services.AddIdentity<User, IdentityRole>(opt =>
             {

@@ -9,6 +9,10 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using EmailConfirmationService;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace DataAccessLibrary.Repos.SQL
 {
@@ -16,6 +20,7 @@ namespace DataAccessLibrary.Repos.SQL
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly EmailConfirmationSender _emailConfirmationSender;
         //private static readonly string SECRET_KEY = Environment.GetEnvironmentVariable("SECRET_KEY");
         public static readonly SymmetricSecurityKey SIGN_IN_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secretkeyforgeneratingjwttokenusingsymmetricsecuritykey"));
 
@@ -31,7 +36,7 @@ namespace DataAccessLibrary.Repos.SQL
             return user == null ? false : true;
         }
 
-        public async Task<string> CreateNewUser(string userName, string email, string password )
+        public async Task<string> CreateNewUser(string userName, string email, string password, IUrlHelper url, HttpRequest request)
         {
             try
             {
@@ -45,7 +50,16 @@ namespace DataAccessLibrary.Repos.SQL
                 if (result.Succeeded)
                 {
                     string token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
-                    await _userManager.ConfirmEmailAsync(newUser, token);
+                    
+                    string confirmationLink =
+                            url.Action("ConfirmEmail", "Account", new { userEmail = newUser.Email, token = token }, request.Scheme);
+
+                    string emailContent = _emailConfirmationSender.CreateEmailContent(newUser.UserName, confirmationLink);
+                    Message message = new Message(new string[] { newUser.Email }, "Confirmation letter - bdmI", emailContent);
+
+                    await _emailConfirmationSender.SendEmailAsync(message);
+                    
+                    //await _userManager.ConfirmEmailAsync(newUser, token);
                     return "Registration was successfull";
                 }
             }
@@ -53,6 +67,23 @@ namespace DataAccessLibrary.Repos.SQL
             {
             }
             return "Registration was unsuccessfull";
+        }
+
+        public async Task<User> ConfirmEmail(string email, string token)
+        {
+            if (email == null || token == null)
+            {
+                return null;
+            }
+            User user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return null;
+            } else
+            {
+                await _userManager.ConfirmEmailAsync(user, token);
+                return user;
+            }
         }
 
         public async Task<User> SignInUser(string userName, string password)
