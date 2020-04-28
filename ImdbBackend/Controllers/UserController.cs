@@ -21,13 +21,17 @@ namespace ImdbBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<string>> Register([FromBody]UserAuthentication userModel)
+        public async Task<ActionResult<UserDTO>> Register([FromBody]UserAuthentication userModel)
         {
-            if (!await _unitOfWork.UserRepository.DoesUserExist(userModel.Email))
+            if (!await _unitOfWork.UserRepository.DoesUserEmailExist(userModel.Email))
             {
-                return await _unitOfWork.UserRepository.CreateNewUser(userModel.UserName, userModel.Email, userModel.Password, Url, Request.Scheme);
+                if(!await _unitOfWork.UserRepository.DoesUserNameExist(userModel.UserName))
+
+                    return await _unitOfWork.UserRepository.CreateNewUser(userModel.UserName, userModel.Email, userModel.Password, Url, Request.Scheme);
+                        
+                return "Username already exists";
             }
-            return "Registration was unsuccessfull";
+            return "Email already exists";
         }
 
         [HttpGet]

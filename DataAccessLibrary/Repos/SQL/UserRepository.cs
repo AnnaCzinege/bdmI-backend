@@ -31,11 +31,19 @@ namespace DataAccessLibrary.Repos.SQL
             _emailConfirmationSender = emailConfirmationSender;
         }
 
-        public async Task<bool> DoesUserExist(string userEmail)
+        public async Task<bool> DoesUserEmailExist(string userEmail)
         {
             User user = await _userManager.FindByEmailAsync(userEmail);
+
             return user == null ? false : true;
         }
+        public async Task<bool> DoesUserNameExist(string userName)
+        {
+            User user = await _userManager.FindByNameAsync(userName);
+
+            return user == null ? false : true;
+        }
+
 
         public async Task<string> CreateNewUser(string userName, string email, string password, IUrlHelper url, string scheme)
         {
