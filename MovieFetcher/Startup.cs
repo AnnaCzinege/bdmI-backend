@@ -1,6 +1,7 @@
 using Autofac;
 using DataAccessLibrary.DataAccess;
 using DataAccessLibrary.Models;
+using EmailConfirmationService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -23,6 +24,12 @@ namespace MovieFetcher
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            EmailConfigurationModel emailConfig = Configuration
+                .GetSection("EmailConfiguration")
+                .Get<EmailConfigurationModel>();
+            emailConfig.Password = "Fake_Imdb_3@";//Environment.GetEnvironmentVariable("EMAIL_PASSWORD");
+            services.AddSingleton(emailConfig);
+
             services.AddDbContextPool<MovieContext>(option => { option.UseSqlServer(Configuration.GetConnectionString("Default")); });
             services.AddHostedService<MovieFetcher>();
             services.AddIdentity<User, IdentityRole>(opt =>
