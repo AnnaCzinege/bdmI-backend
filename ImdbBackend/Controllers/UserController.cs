@@ -21,7 +21,7 @@ namespace ImdbBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<UserDTO>> Register([FromBody]UserAuthentication userModel)
+        public async Task<ActionResult> Register([FromBody]UserAuthentication userModel)
         {
             if (!await _unitOfWork.UserRepository.DoesUserEmailExist(userModel.Email))
             {
@@ -29,7 +29,7 @@ namespace ImdbBackend.Controllers
                 {
                     User user = await _unitOfWork.UserRepository.CreateNewUser(userModel.UserName, userModel.Email, userModel.Password, Url, Request.Scheme);
                     if (user == null) return StatusCode(500);
-                    return _userDTOConverter.ConvertUserObject(user);
+                    return StatusCode(200);
                 }
                 return StatusCode(422);
             }
@@ -43,7 +43,6 @@ namespace ImdbBackend.Controllers
             {
                 return Redirect("http://localhost:3000");
             }
-
             return StatusCode(500);
         }
 
@@ -63,7 +62,7 @@ namespace ImdbBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<StatusCodeResult>> Logout([FromBody] UserDTO user)
+        public async Task<ActionResult> Logout([FromBody] UserDTO user)
         {
             if (ModelState.IsValid)
             {
