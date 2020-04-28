@@ -25,24 +25,26 @@ namespace ImdbBackend.Controllers
         {
             if (!await _unitOfWork.UserRepository.DoesUserEmailExist(userModel.Email))
             {
-                if(!await _unitOfWork.UserRepository.DoesUserNameExist(userModel.UserName))
-
-                    return await _unitOfWork.UserRepository.CreateNewUser(userModel.UserName, userModel.Email, userModel.Password, Url, Request.Scheme);
-                        
-                return "Username already exists";
+                if (!await _unitOfWork.UserRepository.DoesUserNameExist(userModel.UserName))
+                {
+                    User user = await _unitOfWork.UserRepository.CreateNewUser(userModel.UserName, userModel.Email, userModel.Password, Url, Request.Scheme);
+                    if (user == null) return StatusCode(500);
+                    return _userDTOConverter.ConvertUserObject(user);
+                }
+                return StatusCode(422);
             }
-            return "Email already exists";
+            return StatusCode(409);
         }
 
         [HttpGet]
-        public async Task<IActionResult> ConfirmEmail(string userEmail, string token)
+        public async Task<ActionResult> ConfirmEmail(string userEmail, string token)
         {
             if (await _unitOfWork.UserRepository.ConfirmEmail(userEmail, token) != null)
             {
                 return Redirect("http://localhost:3000");
             }
 
-            return BadRequest();
+            return StatusCode(500);
         }
 
 
@@ -57,23 +59,20 @@ namespace ImdbBackend.Controllers
                 userDTO.Token = token;
                 return userDTO;
             }
-            return new UserDTO() { ErrorMessage = "Username or password was invalid"};
+            return StatusCode(400);
         }
 
         [HttpPost]
-        public async Task<ActionResult<string>> Logout([FromBody] UserDTO user)
+        public async Task<ActionResult<StatusCodeResult>> Logout([FromBody] UserDTO user)
         {
             if (ModelState.IsValid)
             {
                 User userToLogOut = await _unitOfWork.UserRepository.GetUser(user.Email);
-
                 await _unitOfWork.UserRepository.UpdateSecurityStamp(userToLogOut);
-
                 await _unitOfWork.UserRepository.SignOut();
-                return "You have been logged out";
+                return StatusCode(200);
             }
-
-            return BadRequest("Unsuccesful logout");
+            return StatusCode(500);
         }
 
         [HttpPost]

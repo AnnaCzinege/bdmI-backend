@@ -45,39 +45,26 @@ namespace DataAccessLibrary.Repos.SQL
         }
 
 
-        public async Task<string> CreateNewUser(string userName, string email, string password, IUrlHelper url, string scheme)
+        public async Task<User> CreateNewUser(string userName, string email, string password, IUrlHelper url, string scheme)
         {
-            try
+            User newUser = new User
             {
-                User newUser = new User
-                {
-                    UserName = userName,
-                    Email = email
-                };
+                UserName = userName,
+                Email = email
+            };
 
-                IdentityResult result = await _userManager.CreateAsync(newUser, password);
-                if (result.Succeeded)
-                {
-                    string token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
-                    
-                    string confirmationLink =
-                            url.Action("ConfirmEmail", "User", new { userEmail = newUser.Email, token }, scheme);
-
-                    string emailContent = _emailConfirmationSender.CreateEmailContent(newUser.UserName, confirmationLink);
-                    Message message = new Message(new string[] { newUser.Email }, "Confirmation letter - bdmI", emailContent);
-
-                    await _emailConfirmationSender.SendEmailAsync(message);
-                    
-                    //await _userManager.ConfirmEmailAsync(newUser, token);
-                    return "Registration was successfull";
-                }
-            }
-            catch (Exception ex)
+            IdentityResult result = await _userManager.CreateAsync(newUser, password);
+            if (result.Succeeded)
             {
-                Console.WriteLine(ex.Message);
+                string token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
+                string confirmationLink = url.Action("ConfirmEmail", "User", new { userEmail = newUser.Email, token }, scheme);
+                string emailContent = _emailConfirmationSender.CreateEmailContent(newUser.UserName, confirmationLink);
+                Message message = new Message(new string[] { newUser.Email }, "Confirmation letter - bdmI", emailContent);
+                await _emailConfirmationSender.SendEmailAsync(message);
+                return newUser;
             }
-            return "Registration was unsuccessfull";
-        }
+            return null;
+    }
 
         public async Task<User> ConfirmEmail(string email, string token)
         {
