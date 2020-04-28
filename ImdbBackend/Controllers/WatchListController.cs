@@ -48,7 +48,7 @@ namespace ImdbBackend.Controllers
             return StatusCode(500);
         }
 
-        [HttpDelete]
+        [HttpDelete("{userId}/{movieId}")]
         public async Task<ActionResult> DeleteFromWatchlist(string userId, int movieId)
         {
             if (ModelState.IsValid)
