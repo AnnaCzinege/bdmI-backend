@@ -20,7 +20,7 @@ namespace ImdbBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<List<Movie>>> GetWatchList([FromBody] UserDTO user)
+        public async Task<ActionResult<List<Movie>>> GetWatchlist([FromBody] UserDTO user)
         {
             if (ModelState.IsValid)
             {
@@ -34,27 +34,27 @@ namespace ImdbBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddToWatchList([FromBody] WatchlistViewModel watchlistDto)
+        public async Task<ActionResult> AddToWatchlist([FromBody] WatchlistViewModel watchlistViewModel)
         {
             if (ModelState.IsValid)
             {
-                User currentUser = await _unitOfWork.UserRepository.GetCurrentUser(watchlistDto.Token);
+                User currentUser = await _unitOfWork.UserRepository.GetCurrentUser(watchlistViewModel.Token);
                 if (currentUser != null)
                 {
-                    await _unitOfWork.WatchlistItemRepository.AddWatchListItem(watchlistDto.UserId, watchlistDto.MovieId);
+                    await _unitOfWork.WatchlistItemRepository.AddWatchListItem(watchlistViewModel.UserId, watchlistViewModel.MovieId);
                     return StatusCode(200);
                 }
             }
             return StatusCode(500);
         }
 
-        [HttpPost]
-        public async Task<ActionResult> DeleteFromWatchList([FromBody] WatchlistViewModel watchlistDto)
+        [HttpDelete]
+        public async Task<ActionResult> DeleteFromWatchlist(string userId, int movieId)
         {
             if (ModelState.IsValid)
             {
 
-                await _unitOfWork.WatchlistItemRepository.DeleteWatchListItem(watchlistDto.UserId, watchlistDto.MovieId);
+                await _unitOfWork.WatchlistItemRepository.DeleteWatchListItem(userId, movieId);
                 return StatusCode(200);
             }
 

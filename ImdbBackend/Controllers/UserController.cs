@@ -47,7 +47,7 @@ namespace ImdbBackend.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<UserDTO>> Login([FromBody] UserAuthentication userModel)
+        public async Task<ActionResult<UserDTO>> Login([FromBody] UserLoginViewModel userModel)
         {
             User user = await _unitOfWork.UserRepository.SignInUser(userModel.UserName, userModel.Password);
             if (user != null)
