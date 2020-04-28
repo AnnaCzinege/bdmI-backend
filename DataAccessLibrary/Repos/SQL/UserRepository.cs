@@ -9,6 +9,10 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using EmailConfirmationService;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace DataAccessLibrary.Repos.SQL
 {
@@ -16,22 +20,32 @@ namespace DataAccessLibrary.Repos.SQL
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly IEmailConfirmationSender _emailConfirmationSender;
         //private static readonly string SECRET_KEY = Environment.GetEnvironmentVariable("SECRET_KEY");
-        private static readonly SymmetricSecurityKey SIGN_IN_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secretkeyforgeneratingjwttokenusingsymmetricsecuritykey"));
+        public static readonly SymmetricSecurityKey SIGN_IN_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secretkeyforgeneratingjwttokenusingsymmetricsecuritykey"));
 
-        public UserRepository(MovieContext context, UserManager<User> userManager, SignInManager<User> signInManager) : base(context)
+        public UserRepository(MovieContext context, UserManager<User> userManager, SignInManager<User> signInManager, IEmailConfirmationSender emailConfirmationSender) : base(context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailConfirmationSender = emailConfirmationSender;
         }
 
-        public async Task<bool> DoesUserExist(string userEmail)
+        public async Task<bool> DoesUserEmailExist(string userEmail)
         {
             User user = await _userManager.FindByEmailAsync(userEmail);
+
+            return user == null ? false : true;
+        }
+        public async Task<bool> DoesUserNameExist(string userName)
+        {
+            User user = await _userManager.FindByNameAsync(userName);
+
             return user == null ? false : true;
         }
 
-        public async Task CreateNewUser(string userName, string email, string password )
+
+        public async Task<User> CreateNewUser(string userName, string email, string password, IUrlHelper url, string scheme)
         {
             User newUser = new User
             {
@@ -43,7 +57,29 @@ namespace DataAccessLibrary.Repos.SQL
             if (result.Succeeded)
             {
                 string token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
-                await _userManager.ConfirmEmailAsync(newUser, token);
+                string confirmationLink = url.Action("ConfirmEmail", "User", new { userEmail = newUser.Email, token }, scheme);
+                string emailContent = _emailConfirmationSender.CreateEmailContent(newUser.UserName, confirmationLink);
+                Message message = new Message(new string[] { newUser.Email }, "Confirmation letter - bdmI", emailContent);
+                await _emailConfirmationSender.SendEmailAsync(message);
+                return newUser;
+            }
+            return null;
+    }
+
+        public async Task<User> ConfirmEmail(string email, string token)
+        {
+            if (email == null || token == null)
+            {
+                return null;
+            }
+            User user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return null;
+            } else
+            {
+                await _userManager.ConfirmEmailAsync(user, token);
+                return user;
             }
         }
 
@@ -74,10 +110,21 @@ namespace DataAccessLibrary.Repos.SQL
 
         public async Task<User> GetCurrentUser(string token)
         {
-            JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
-            JwtSecurityToken result = jwtHandler.ReadToken(token) as JwtSecurityToken;
-            string Id = result.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
-            return await _userManager.FindByIdAsync(Id);
+            try
+            {
+                JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
+                JwtSecurityToken result = jwtHandler.ReadToken(token) as JwtSecurityToken;
+                string Id = result.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+                return await _userManager.FindByIdAsync(Id);
+            }
+            catch (Exception ex)
+            {
+                if (ex is ArgumentNullException || ex is ArgumentException)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            return null;
         }
 
         public string GenerateTokenForUser(string id, string userName, string email)

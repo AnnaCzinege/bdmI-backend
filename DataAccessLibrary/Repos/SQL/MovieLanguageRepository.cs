@@ -19,7 +19,7 @@ namespace DataAccessLibrary.Repos.SQL
                                                 .ToListAsync();
         }
 
-        public async Task<bool> IsPairExist(int movieId, int languageId)
+        public async Task<bool> DoesPairExist(int movieId, int languageId)
         {
             return _context.MovieLanguages.Where(ml => ml.MovieId == movieId).Any(ml => ml.LanguageId == languageId);
         }

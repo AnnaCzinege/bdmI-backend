@@ -8,6 +8,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessLibrary", "..\DataAccessLibrary\DataAccessLibrary.csproj", "{EE69C27E-8BED-4ADE-8284-EF2DE60D4341}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImdbBackEnd.Tests", "..\ImdbBackEnd.Tests\ImdbBackEnd.Tests.csproj", "{536513D6-4F22-4395-B500-723EE62F1E7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieFetcher", "..\MovieFetcher\MovieFetcher.csproj", "{960992A2-6A20-49FE-A4B2-89589CF25910}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailConfirmationService", "..\EmailConfirmationService\EmailConfirmationService.csproj", "{B6DC9A90-14E9-4A94-B33F-6321FA5A3A2A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +30,14 @@ Global
 		{536513D6-4F22-4395-B500-723EE62F1E7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{536513D6-4F22-4395-B500-723EE62F1E7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{536513D6-4F22-4395-B500-723EE62F1E7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{960992A2-6A20-49FE-A4B2-89589CF25910}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{960992A2-6A20-49FE-A4B2-89589CF25910}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{960992A2-6A20-49FE-A4B2-89589CF25910}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{960992A2-6A20-49FE-A4B2-89589CF25910}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6DC9A90-14E9-4A94-B33F-6321FA5A3A2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6DC9A90-14E9-4A94-B33F-6321FA5A3A2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6DC9A90-14E9-4A94-B33F-6321FA5A3A2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6DC9A90-14E9-4A94-B33F-6321FA5A3A2A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,7 +1,6 @@
 using Autofac;
 using DataAccessLibrary.DataAccess;
 using DataAccessLibrary.Models;
-using DataAccessLibrary.Repos.SQL;
 using EmailConfirmationService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,10 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
-using System;
 
-namespace ImdbBackend
+namespace MovieFetcher
 {
     public class Startup
     {
@@ -22,40 +19,11 @@ namespace ImdbBackend
             Configuration = configuration;
         }
 
-        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = "JwtBearer";
-                options.DefaultChallengeScheme = "JwtBearer";
-            }).
-                AddJwtBearer("JwtBearer", jwtOptions =>
-                {
-                    jwtOptions.TokenValidationParameters = new TokenValidationParameters()
-                    {
-                        IssuerSigningKey = UserRepository.SIGN_IN_KEY,
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        ValidateIssuerSigningKey = true,
-                        ValidateLifetime = true,
-                        ClockSkew = TimeSpan.FromMinutes(5)
-                    };
-                });
-
-            services.AddCors(options =>
-            {
-                options.AddPolicy(MyAllowSpecificOrigins,
-                builder =>
-                {
-                    builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
-                });
-            });
-
             EmailConfigurationModel emailConfig = Configuration
                 .GetSection("EmailConfiguration")
                 .Get<EmailConfigurationModel>();
@@ -63,6 +31,7 @@ namespace ImdbBackend
             services.AddSingleton(emailConfig);
 
             services.AddDbContextPool<MovieContext>(option => { option.UseSqlServer(Configuration.GetConnectionString("Default")); });
+            services.AddHostedService<MovieFetcher>();
             services.AddIdentity<User, IdentityRole>(opt =>
             {
                 opt.User.RequireUniqueEmail = true;
@@ -79,7 +48,6 @@ namespace ImdbBackend
                 config.Password.RequireLowercase = true;
                 config.Password.RequireUppercase = true;
             });
-            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -92,23 +60,14 @@ namespace ImdbBackend
 
             app.UseHttpsRedirection();
 
-            app.UseCors(MyAllowSpecificOrigins);
-
             app.UseRouting();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
             //Autofac configuration
-           builder.RegisterModule<DALAutofacModule>();
+            builder.RegisterModule<DALAutofacModule>();
         }
     }
 }

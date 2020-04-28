@@ -8,8 +8,8 @@ namespace DataAccessLibrary.Repos.Interfaces
     {
         Task<List<string>> GetLanguages(List<int> movieLanguageIds);
 
-        Task<bool> IsNameExist(string name);
-
         Task<int> GetIdByName(string name);
+
+        Task<List<string>> GetAllName();
     }
 }

@@ -2,10 +2,8 @@
 using DataAccessLibrary.Models;
 using DataAccessLibrary.Repos.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DataAccessLibrary.Repos.SQL
@@ -42,9 +40,6 @@ namespace DataAccessLibrary.Repos.SQL
             _context.WatchlistItems.Remove(itemToDelete);
 
             await _context.SaveChangesAsync();
-
         }
-
-
     }
 }

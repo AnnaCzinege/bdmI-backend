@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using DataAccessLibrary.Models;
 using DataAccessLibrary.RepositoryContainer;
 using ImdbBackend.ViewModels;
 using ImdbBackend.DTOs;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ImdbBackend.Controllers
@@ -25,18 +20,34 @@ namespace ImdbBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<string>> Register([FromBody]UserAuthentication userModel)
+        public async Task<ActionResult> Register([FromBody]UserAuthentication userModel)
         {
-            if (!await _unitOfWork.UserRepository.DoesUserExist(userModel.Email))
+            if (!await _unitOfWork.UserRepository.DoesUserEmailExist(userModel.Email))
             {
-                await _unitOfWork.UserRepository.CreateNewUser(userModel.UserName, userModel.Email, userModel.Password);
-                return "Registration was successful";
+                if (!await _unitOfWork.UserRepository.DoesUserNameExist(userModel.UserName))
+                {
+                    User user = await _unitOfWork.UserRepository.CreateNewUser(userModel.UserName, userModel.Email, userModel.Password, Url, Request.Scheme);
+                    if (user == null) return StatusCode(500);
+                    return StatusCode(200);
+                }
+                return StatusCode(422);
             }
-            return BadRequest(new {error = "User already exists!" });
+            return StatusCode(409);
         }
 
+        [HttpGet]
+        public async Task<ActionResult> ConfirmEmail(string userEmail, string token)
+        {
+            if (await _unitOfWork.UserRepository.ConfirmEmail(userEmail, token) != null)
+            {
+                return Redirect("http://localhost:3000");
+            }
+            return StatusCode(500);
+        }
+
+
         [HttpPost]
-        public async Task<ActionResult<UserDTO>> Login([FromBody] UserAuthentication userModel)
+        public async Task<ActionResult<UserDTO>> Login([FromBody] UserLoginViewModel userModel)
         {
             User user = await _unitOfWork.UserRepository.SignInUser(userModel.UserName, userModel.Password);
             if (user != null)
@@ -46,61 +57,20 @@ namespace ImdbBackend.Controllers
                 userDTO.Token = token;
                 return userDTO;
             }
-            return BadRequest(new { error = "Username or password is invalid!" });
+            return StatusCode(400);
         }
 
         [HttpPost]
-        public async Task<ActionResult<string>> Logout([FromBody] UserDTO user)
+        public async Task<ActionResult> Logout([FromBody] UserDTO user)
         {
             if (ModelState.IsValid)
             {
                 User userToLogOut = await _unitOfWork.UserRepository.GetUser(user.Email);
-
                 await _unitOfWork.UserRepository.UpdateSecurityStamp(userToLogOut);
-
                 await _unitOfWork.UserRepository.SignOut();
-                return "You have been logged out";
+                return StatusCode(200);
             }
-
-            return BadRequest("Unsuccesful logout");
-        }
-
-        [HttpPost]
-        public async Task<ActionResult<List<Movie>>> GetWatchList([FromBody] UserDTO user)
-        {
-            if (ModelState.IsValid)
-            {
-                
-                return await _unitOfWork.WatchlistItemRepository.GetWatchListOfUser(user.Id);
-            }
-
-            return BadRequest("Unsuccesful get request of watchlist");
-        }
-
-        [HttpPost]
-        public async Task<ActionResult<string>> AddToWatchList([FromBody] WatchlistDTO watchlistDto)
-        {
-            if (ModelState.IsValid)
-            {
-
-                await _unitOfWork.WatchlistItemRepository.AddWatchListItem(watchlistDto.UserId, watchlistDto.MovieId);
-                return "Watchlist item succesully added";
-            }
-
-            return BadRequest("Unsuccesful post request of adding item to watchlist");
-        }
-
-        [HttpDelete]
-        public async Task<ActionResult<string>> DeleteFromWatchList([FromBody] WatchlistDTO watchlistDto)
-        {
-            if (ModelState.IsValid)
-            {
-
-                await _unitOfWork.WatchlistItemRepository.DeleteWatchListItem(watchlistDto.UserId, watchlistDto.MovieId);
-                return "Watchlist item succesully deleted";
-            }
-
-            return BadRequest("Unsuccesful delete request of deleting item to watchlist");
+            return StatusCode(500);
         }
 
         [HttpPost]
@@ -111,6 +81,5 @@ namespace ImdbBackend.Controllers
             currentUserDTO.Token = jwtToken;
             return currentUserDTO;
         }
-
     }
 }
