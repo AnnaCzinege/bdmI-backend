@@ -54,11 +54,6 @@ namespace DataAccessLibrary.Repos.SQL
                                         .ToListAsync();
         }
 
-        public async Task<bool> IsIdExist(int id)
-        {
-            return _context.Movies.Any(movie => movie.OriginalId == id);
-        }
-
         public async Task<int> GetIdByOriginalId(int id)
         {
             Movie movie = await _context.Movies.FirstAsync(m => m.OriginalId == id);

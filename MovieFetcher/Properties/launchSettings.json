@@ -3,8 +3,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:52691",
-      "sslPort": 44314
+      "applicationUrl": "http://localhost:49266",
+      "sslPort": 44397
     }
   },
   "$schema": "http://json.schemastore.org/launchsettings.json",
@@ -12,18 +12,13 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/top-rated/1",
+      "launchUrl": "update-database",
       "environmentVariables": {
-        "SECRET_KEY": "72rm&4qjqqq#))car%-x_uv+st0yo=87!84&#pzxj2y$ic6y^k",
-        "EMAIL_PASSWORD": "Fake_Imdb_3@",
-        "CONNECTION_STRING": "Host=localhost;Database=bdmI-postgres;Username=postgres;Password=ApDhpq1J;",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "ImdbBackend": {
+    "MovieFetcher": {
       "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "api/top-rated/1",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

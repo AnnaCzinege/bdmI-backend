@@ -26,13 +26,11 @@ namespace ImdbBackend.Controllers
             return await _unitOfWork.MovieRepository.GetTopRatedMovies(page);
         }
 
-
         [HttpGet("popular/{page}")]
         public async Task<ActionResult<List<Movie>>> GetPopularMovies(int page)
         {
             return await _unitOfWork.MovieRepository.GetPopularMovies(page);
         }
-
 
         [HttpGet("now-playing/{page}")]
         public async Task<ActionResult<List<Movie>>> GetNowPlayingMovies(int page)
@@ -40,13 +38,11 @@ namespace ImdbBackend.Controllers
             return await _unitOfWork.MovieRepository.GetNowPlayingMovies(page);
         }
 
-
         [HttpGet("upcoming/{page}")]
         public async Task<ActionResult<List<Movie>>> GetUpcominMovies(int page)
         {
             return await _unitOfWork.MovieRepository.GetUpcomingMovies(page);
         }
-
 
         [HttpGet("moviedetails/{id}")]
         public async Task<ActionResult<MovieDetails>> GetMovieDetails(int id)
@@ -56,7 +52,6 @@ namespace ImdbBackend.Controllers
             List<string> languages = await _unitOfWork.LanguageRepository.GetLanguages(movie.MovieLanguages.Select(ml => ml.LanguageId).ToList());
             return new MovieDetailsConverter().ConvertToMovieDetails(movie, genres, languages);
         }
-
 
         [HttpGet("allmovies")]
         public async Task<ActionResult<List<AllMovies>>> GetAllMovies()

@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "DataAccessLibrary": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "\"SECRET_KEY\"": "\"secretkeyforgeneratingjwttokenusingsymmetricsecuritykey\""
+      },
+      "sqlDebugging": true,
+      "nativeDebugging": true
+    }
+  }
+}

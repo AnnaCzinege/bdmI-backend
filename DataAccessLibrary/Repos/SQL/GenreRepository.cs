@@ -12,6 +12,11 @@ namespace DataAccessLibrary.Repos.SQL
     {
         public GenreRepository(MovieContext context) : base(context) { }
 
+        public async Task<List<string>> GetAllName()
+        {
+            return await _context.Genres.Select(g => g.Name).ToListAsync();
+        }
+
         public async Task<List<string>> GetGenres(List<int> movieGenreIds)
         {
             return await _context.Genres.Where(g => movieGenreIds.Contains(g.Id))
@@ -25,9 +30,5 @@ namespace DataAccessLibrary.Repos.SQL
             return genre.Id;
         }
 
-        public async Task<bool> IsNameExist(string name)
-        {
-            return _context.Genres.Any(g => g.Name == name);
-        }
     }
 }

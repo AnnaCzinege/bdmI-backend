@@ -11,6 +11,7 @@ namespace DataAccessLibrary.RepositoryContainer
         IGenreRepository GenreRepository { get; }
         ILanguageRepository LanguageRepository { get; }
         IUserRepository UserRepository { get; }
+        IWatchlistItemRepository WatchlistItemRepository { get; }
         Task SaveAsync();
     }
 }

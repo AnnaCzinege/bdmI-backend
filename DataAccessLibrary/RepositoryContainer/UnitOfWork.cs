@@ -20,13 +20,16 @@ namespace DataAccessLibrary.RepositoryContainer
 
         public IUserRepository UserRepository { get; set; }
 
+        public IWatchlistItemRepository WatchlistItemRepository { get; set; }
+
         public UnitOfWork(MovieContext context, 
                             IMovieRepository movieRepository,
                             IMovieGenreRepository movieGenreRepository,
                             IMovieLanguageRepository movieLanguageRepository,
                             IGenreRepository genreRepository,
                             ILanguageRepository languageRepository,
-                            IUserRepository userRepository)
+                            IUserRepository userRepository,
+                            IWatchlistItemRepository watchlistItemRepository)
         {
             _context = context;
             MovieRepository = movieRepository;
@@ -35,8 +38,8 @@ namespace DataAccessLibrary.RepositoryContainer
             GenreRepository = genreRepository;
             LanguageRepository = languageRepository;
             UserRepository = userRepository;
+            WatchlistItemRepository = watchlistItemRepository;
         }
-
 
         public async Task SaveAsync()
         {

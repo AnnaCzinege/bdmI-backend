@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace ImdbBackend.DTOs
+﻿namespace ImdbBackend.DTOs
 {
     public class UserDTO
     {
@@ -11,5 +6,6 @@ namespace ImdbBackend.DTOs
         public string UserName { get; set; }
         public string Email { get; set; }
         public string Token { get; set; }
+        public string ErrorMessage { get; set; }
     }
 }
