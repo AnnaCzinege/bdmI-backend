@@ -52,7 +52,7 @@ namespace ImdbBackend
                 options.AddPolicy(MyAllowSpecificOrigins,
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:3000", "https://bdmi.netlify.com/").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+                    builder.WithOrigins("http://localhost:3000", "https://bdmi.netlify.app/").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
                 });
             });
 
