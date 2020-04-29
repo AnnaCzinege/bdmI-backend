@@ -21,8 +21,8 @@ namespace DataAccessLibrary.Repos.SQL
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IEmailConfirmationSender _emailConfirmationSender;
-        //private static readonly string SECRET_KEY = Environment.GetEnvironmentVariable("SECRET_KEY");
-        public static readonly SymmetricSecurityKey SIGN_IN_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secretkeyforgeneratingjwttokenusingsymmetricsecuritykey"));
+        private static readonly string SECRET_KEY = Environment.GetEnvironmentVariable("SECRET_KEY");
+        public static readonly SymmetricSecurityKey SIGN_IN_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECRET_KEY));
 
         public UserRepository(MovieContext context, UserManager<User> userManager, SignInManager<User> signInManager, IEmailConfirmationSender emailConfirmationSender) : base(context)
         {

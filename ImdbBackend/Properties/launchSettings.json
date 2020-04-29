@@ -1,5 +1,4 @@
-﻿{
-  "$schema": "http://json.schemastore.org/launchsettings.json",
+{
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
@@ -8,12 +7,16 @@
       "sslPort": 44314
     }
   },
+  "$schema": "http://json.schemastore.org/launchsettings.json",
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
       "launchUrl": "api/top-rated/1",
       "environmentVariables": {
+        "SECRET_KEY": "72rm&4qjqqq#))car%-x_uv+st0yo=87!84&#pzxj2y$ic6y^k",
+        "EMAIL_PASSWORD": "Fake_Imdb_3@",
+        "CONNECTION_STRING": "Host=localhost;Database=bdmI-postgres;Username=postgres;Password=ApDhpq1J;",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
@@ -21,10 +24,10 @@
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "api/top-rated/1",
-      "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "applicationUrl": "https://localhost:5001;http://localhost:5000"
     }
   }
 }

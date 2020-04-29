@@ -52,17 +52,17 @@ namespace ImdbBackend
                 options.AddPolicy(MyAllowSpecificOrigins,
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
+                    builder.WithOrigins("http://localhost:3000", "https://bdmi.netlify.app/").AllowAnyHeader().AllowAnyMethod();
                 });
             });
 
             EmailConfigurationModel emailConfig = Configuration
                 .GetSection("EmailConfiguration")
                 .Get<EmailConfigurationModel>();
-            emailConfig.Password = "Fake_Imdb_3@";//Environment.GetEnvironmentVariable("EMAIL_PASSWORD");
+            emailConfig.Password = Environment.GetEnvironmentVariable("EMAIL_PASSWORD");
             services.AddSingleton(emailConfig);
 
-            services.AddDbContextPool<MovieContext>(option => { option.UseNpgsql("Host=localhost;Database=bdmI-postgres;Username=postgres;Password=ApDhpq1J;"); });
+            services.AddDbContextPool<MovieContext>(option => { option.UseNpgsql(Environment.GetEnvironmentVariable("CONNECTION_STRING")); });
             services.AddIdentity<User, IdentityRole>(opt =>
             {
                 opt.User.RequireUniqueEmail = true;
