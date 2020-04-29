@@ -1,6 +1,7 @@
 ﻿using DataAccessLibrary.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace DataAccessLibrary.DataAccess
 {
@@ -26,6 +27,6 @@ namespace DataAccessLibrary.DataAccess
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseNpgsql("Host=localhost;Database=bdmI-postgres;Username=postgres;Password=ApDhpq1J");
+            => optionsBuilder.UseNpgsql(Environment.GetEnvironmentVariable("CONNECTION_STRING"));
     }
 }
