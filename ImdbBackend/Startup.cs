@@ -61,7 +61,7 @@ namespace ImdbBackend
                 .Get<EmailConfigurationModel>();
             emailConfig.Password = Environment.GetEnvironmentVariable("EMAIL_PASSWORD");
             services.AddSingleton(emailConfig);
-
+            services.AddHostedService<UpdateDatabase>();
             services.AddDbContextPool<MovieContext>(option => { option.UseNpgsql(Environment.GetEnvironmentVariable("CONNECTION_STRING")); });
             services.AddIdentity<User, IdentityRole>(opt =>
             {
