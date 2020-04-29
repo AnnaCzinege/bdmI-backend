@@ -19,7 +19,7 @@ namespace DataAccessLibrary.Repos.SQL
         {
             long currentDateOneMonthAgo = Convert.ToInt64(new DateTime(DateTime.Today.Year, DateTime.Today.Month - 1, 1).ToString("yyyyMMdd"));
             long currentDate = Convert.ToInt64(DateTime.Now.ToString("yyyyMMdd"));
-            return await _context.Movies.Where(movie => Convert.ToInt64(movie.ReleaseDate.Replace("-", "")) > currentDateOneMonthAgo 
+            return await _context.Movies.Where(movie => movie.ReleaseDate.Length > 0 &&  Convert.ToInt64(movie.ReleaseDate.Replace("-", "")) > currentDateOneMonthAgo 
                                                                         && Convert.ToInt64(movie.ReleaseDate.Replace("-", "")) < currentDate)
                                         .OrderByDescending(movie => Convert.ToInt64(movie.ReleaseDate.Replace("-", "")))
                                         .Skip(CalculateFirstItemOfPage(page))
@@ -47,7 +47,7 @@ namespace DataAccessLibrary.Repos.SQL
         public async Task<List<Movie>> GetUpcomingMovies(int page)
         {
             long currentDate = Convert.ToInt64(DateTime.Now.ToString("yyyyMMdd"));
-            return await _context.Movies.Where(m => Convert.ToInt64(m.ReleaseDate.Replace("-", "")) > currentDate)
+            return await _context.Movies.Where(m => m.ReleaseDate.Length > 0 && Convert.ToInt64(m.ReleaseDate.Replace("-", "")) > currentDate)
                                         .OrderBy(m => Convert.ToInt64(m.ReleaseDate.Replace("-", "")))
                                         .Skip(CalculateFirstItemOfPage(page))
                                         .Take(_moviesPerPage)
