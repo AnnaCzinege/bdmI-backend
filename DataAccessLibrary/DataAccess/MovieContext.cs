@@ -24,5 +24,8 @@ namespace DataAccessLibrary.DataAccess
             modelBuilder.Entity<MovieLanguage>().HasKey(ml => new { ml.MovieId, ml.LanguageId });
             modelBuilder.Entity<WatchlistItem>().HasKey(w => new { w.MovieId, w.UserId });
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder.UseNpgsql("Host=localhost;Database=bdmI-postgres;Username=postgres;Password=ApDhpq1J");
     }
 }

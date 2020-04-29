@@ -62,7 +62,7 @@ namespace ImdbBackend
             emailConfig.Password = "Fake_Imdb_3@";//Environment.GetEnvironmentVariable("EMAIL_PASSWORD");
             services.AddSingleton(emailConfig);
 
-            services.AddDbContextPool<MovieContext>(option => { option.UseSqlServer(Configuration.GetConnectionString("Default")); });
+            services.AddDbContextPool<MovieContext>(option => { option.UseNpgsql("Host=localhost;Database=bdmI-postgres;Username=postgres;Password=ApDhpq1J;"); });
             services.AddIdentity<User, IdentityRole>(opt =>
             {
                 opt.User.RequireUniqueEmail = true;
