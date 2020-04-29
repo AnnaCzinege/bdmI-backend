@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DataAccessLibrary.Migrations
 {
     [DbContext(typeof(MovieContext))]
-    [Migration("20200429175434_initHerokulol")]
-    partial class initHerokulol
+    [Migration("20200429182653_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
