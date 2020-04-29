@@ -4,6 +4,7 @@ using DataAccessLibrary.RepositoryContainer;
 using ImdbBackend.ViewModels;
 using ImdbBackend.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace ImdbBackend.Controllers
 {
@@ -40,7 +41,7 @@ namespace ImdbBackend.Controllers
         {
             if (await _unitOfWork.UserRepository.ConfirmEmail(userEmail, token) != null)
             {
-                return Redirect("http://localhost:3000");
+                return Redirect(Environment.GetEnvironmentVariable("REDIRECT"));
             }
             return StatusCode(500);
         }

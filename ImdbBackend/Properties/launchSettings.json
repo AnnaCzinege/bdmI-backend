@@ -17,6 +17,7 @@
         "SECRET_KEY": "72rm&4qjqqq#))car%-x_uv+st0yo=87!84&#pzxj2y$ic6y^k",
         "EMAIL_PASSWORD": "Fake_Imdb_3@",
         "CONNECTION_STRING": "Host=localhost;Database=bdmI-postgres;Username=postgres;Password=ApDhpq1J;",
+        "REDIRECT": "http://localhost:3000",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
