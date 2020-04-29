@@ -33,7 +33,7 @@ namespace ImdbBackend
         {
             List<int> movieIds = new List<int>();
             string baseURL = "https://api.themoviedb.org/3/movie/popular?api_key=bb29364ab81ef62380611d162d85ecdb&language=en-US&page=";
-            int totalMoviePages = 500;
+            int totalMoviePages = 50;
 
             for (int page = 1; page <= totalMoviePages; page++)
             {
