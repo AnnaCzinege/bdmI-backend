@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace MovieFetcher
 {
@@ -27,10 +28,10 @@ namespace MovieFetcher
             EmailConfigurationModel emailConfig = Configuration
                 .GetSection("EmailConfiguration")
                 .Get<EmailConfigurationModel>();
-            emailConfig.Password = "Fake_Imdb_3@";//Environment.GetEnvironmentVariable("EMAIL_PASSWORD");
+            emailConfig.Password = Environment.GetEnvironmentVariable("EMAIL_PASSWORD");
             services.AddSingleton(emailConfig);
 
-            services.AddDbContextPool<MovieContext>(option => { option.UseNpgsql("Host=localhost;Database=bdmI-postgres;Username=postgres;Password=ApDhpq1J;"); });
+            services.AddDbContextPool<MovieContext>(option => { option.UseNpgsql(Environment.GetEnvironmentVariable("CONNECTION_STRING")); });
             services.AddHostedService<MovieFetcher>();
             services.AddIdentity<User, IdentityRole>(opt =>
             {
