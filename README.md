@@ -1,4 +1,4 @@
-# bdmI project backend - ASP.NET Core with C#
+# bdmI project backend - ASP.NET Core with C
 
 ## The project
 
@@ -29,8 +29,9 @@ To set up the EmailService part of the project, please create an e-mail account 
 
 ## Frontend
 
-The bdmI frontend that acts as the presentation layer for the project is available at the following link: [bdmI-frontend](https://github.com/AnnaCzinege/bdmI-frontend)
-**Heroku tends to fall asleep when the application is not running, therefore it is advised to wait 20-30 seconds after launching the website so the backend has time to load**
+The bdmI frontend that acts as the presentation layer for the project is available at the following link: [bdmI-frontend](https://github.com/AnnaCzinege/bdmI-frontend)<p >
+
+<p align="center">**Heroku tends to fall asleep when the application is not running, therefore it is advised to wait 20-30 seconds after launching the website so the backend has time to load**</p>
 
 ## Contributors
 
