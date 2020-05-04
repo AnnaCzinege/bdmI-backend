@@ -6,11 +6,11 @@ This repository contains the WebAPI for the website called bdmI. It is a four sp
 
 ### Used technologies
 
-⚬ C# targeting .NET Core 3.1
-⚬ ASP.NET Core
-⚬ Entity Framework with PostgreSQL relational database management system
-⚬ Identity Framework
-⚬ Repository pattern, UnitOfWork
+⚬ C# targeting .NET Core 3.1</br>
+⚬ ASP.NET Core</br>
+⚬ Entity Framework with PostgreSQL relational database management system</br>
+⚬ Identity Framework</br>
+⚬ Repository pattern, UnitOfWork</br>
 
 ## How to run
 
@@ -18,12 +18,12 @@ To be able to run the WebAPI you have to follow these simple steps:
 
 Create an empty database
 Populate your newly created database with the `create-tables-or-reset-database.sql` file.
-Setup your environment variables with the following key-value pairs:
-⚬ `COONECTION_STRING : Host=DBHost; Database=DBName; Username=YourUsername; Password=YourPassword;`
-⚬ `DOMAIN_STRING : https://bdmi.netlify.app/`
-⚬ `SECRET_KEY : your secret key`
-⚬ `EMAIL_PASSWORD : your emailservice password`
-⚬ `REDIRECT : http://localhost:3000`
+Setup your environment variables with the following key-value pairs:</br>
+⚬ `COONECTION_STRING : Host=DBHost; Database=DBName; Username=YourUsername; Password=YourPassword;`</br>
+⚬ `DOMAIN_STRING : https://bdmi.netlify.app/`</br>
+⚬ `SECRET_KEY : your secret key`</br>
+⚬ `EMAIL_PASSWORD : your emailservice password`</br>
+⚬ `REDIRECT : http://localhost:3000`</br>
 Run the application
 To set up the EmailService part of the project, please create an e-mail account to send the confirmation to the user at registration.
 
